@@ -1,0 +1,377 @@
+{% extends "layouts/main.html" %}
+
+{% block title %}Inicio - Leopardo E-commerce{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+        <section class="hero-section bg-primary text-white py-5">
+                <div class="container">
+                    <div class="custom-carousel" id="customCarousel">
+                        <div class="custom-carousel-track">
+                            <div class="custom-carousel-slide active">
+                                <div class="row align-items-center">
+                                    <div class="col-lg-6">
+                                        <h1 class="display-4 fw-bold mb-2">Calzado de Seguridad Industrial</h1>
+                                        <h3 class="mb-3 text-warning">Protección y confort para tu equipo</h3>
+                                        <ul class="mb-3 ps-3">
+                                            <li>Certificados y normados para industria</li>
+                                            <li>Antideslizantes, dieléctricos e impermeables</li>
+                                            <li>Diseño ergonómico y resistente</li>
+                                        </ul>
+                                        <p class="lead mb-4">Cuida a tus trabajadores con la mejor calidad en calzado de seguridad.</p>
+                                        <a href="/productos" class="btn btn-warning btn-lg text-dark fw-bold">Descubre la colección</a>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <img src="assets/images/slider-image.png" class="d-block w-100 rounded carousel-img-mobile-mt" alt="Calzado 1">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="custom-carousel-slide">
+                                <div class="row align-items-center w-100">
+                                    <div class="col-lg-6">
+                                        <h1 class="display-4 fw-bold mb-2">Envíos Rápidos</h1>
+                                        <h3 class="mb-3 text-warning">Recibe tu pedido sin demoras</h3>
+                                        <ul class="mb-3 ps-3">
+                                            <li>Stock disponible inmediato</li>
+                                            <li>Entrega en 24-48 horas</li>
+                                            <li>Envíos a todo el país</li>
+                                        </ul>
+                                        <p class="lead mb-4">Compra hoy y recibe tus productos en tiempo récord.</p>
+                                        <a href="/productos" class="btn btn-warning btn-lg text-dark fw-bold">Comprar ahora</a>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <img src="assets/images/calzados-industrial.jpg" class="d-block w-100 rounded carousel-img-mobile-mt" alt="Calzado 2">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="custom-carousel-slide">
+                                <div class="row align-items-center">
+                                    <div class="col-lg-6">
+                                        <h1 class="display-4 fw-bold mb-2">Variedad de Modelos</h1>
+                                        <h3 class="mb-3 text-warning">Encuentra el ideal para tu industria</h3>
+                                        <ul class="mb-3 ps-3">
+                                            <li>Amplia gama de estilos y tallas</li>
+                                            <li>Opciones para diferentes sectores</li>
+                                            <li>Asesoría personalizada</li>
+                                        </ul>
+                                        <p class="lead mb-4">Elige el calzado perfecto para tu equipo y tu empresa.</p>
+                                        <a href="/productos" class="btn btn-warning btn-lg text-dark fw-bold">Ver todos los modelos</a>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <img src="assets/images/calzado-seguridad-industria.jpg" class="d-block w-100 rounded carousel-img-mobile-mt" alt="Calzado 3">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <button hidden class="custom-carousel-control prev" aria-label="Anterior">&#10094;</button>
+                        <button hidden class="custom-carousel-control next" aria-label="Siguiente">&#10095;</button>
+                        <div class="custom-carousel-indicators">
+                            <span class="indicator active" data-slide="0"></span>
+                            <span class="indicator" data-slide="1"></span>
+                            <span class="indicator" data-slide="2"></span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+<!-- Características -->
+            <section class="py-5">
+                <div class="container">
+                    <div class="row text-center">
+                        <div class="col-md-4 mb-4">
+                            <div class="feature-card p-4">
+                                <i class="fas fa-shield-alt fa-3x custom-icon mb-3"></i>
+                                <h4>Máxima Protección</h4>
+                                <p>Calzado certificado que cumple con todas las normas de seguridad industrial.</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-4">
+                            <div class="feature-card p-4">
+                                <i class="fas fa-shipping-fast fa-3x custom-icon mb-3"></i>
+                                <h4>Envío Rápido</h4>
+                                <p>Entrega en 24-48 horas a nivel nacional. Stock disponible inmediatamente.</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-4">
+                            <div class="feature-card p-4">
+                                <i class="fas fa-award fa-3x custom-icon mb-3"></i>
+                                <h4>Calidad Garantizada</h4>
+                                <p>Productos de marcas reconocidas con garantía de calidad y durabilidad.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+<!-- Categorías -->
+<section class="py-5 bg-light custom-h2">
+    <div class="container">
+        <h2 class="text-center mb-5">Nuestras Categorías</h2>
+        <div class="row" id="categorias-container">
+            <!-- Se llena dinámicamente -->
+        </div>
+    </div>
+</section>
+
+<!-- Productos Destacados -->
+<section class="py-5">
+    <div class="container">
+        <h2 class="text-center mb-5">Productos Destacados</h2>
+        <div class="row" id="productos-destacados">
+            <!-- Se llena dinámicamente -->
+        </div>
+        <div class="text-center mt-4">
+            <a href="/productos" class="btn btn-outline-primary">Ver Todos los Productos</a>
+        </div>
+    </div>
+</section>
+
+<!-- Productos Recientes -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <h2 class="text-center mb-5">Productos Recientes</h2>
+        <div class="row" id="productos-recientes">
+            <!-- Se llena dinámicamente -->
+        </div>
+    </div>
+</section>
+
+<!-- Testimonios -->
+<!-- Testimonios -->
+<section class="py-5">
+    <div class="container">
+        <h2 class="text-center mb-5 text-warning">Lo que Dicen Nuestros Clientes</h2>
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="testimonial-card p-4">
+                    <div class="stars mb-3">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <p class="mb-3">"Excelente calidad y comodidad. Mis trabajadores están muy contentos con las botas."</p>
+                    <div class="d-flex align-items-center">
+                        <img src="/assets/images/avatar-default.jpg" alt="Cliente" class="rounded-circle me-3" width="50" height="50">
+                        <div>
+                            <h6 class="mb-0">Carlos Mendoza</h6>
+                            <small>Gerente de Seguridad</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="testimonial-card p-4">
+                    <div class="stars mb-3">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <p class="mb-3">"Entrega rápida y productos de primera calidad. Recomendado al 100%."</p>
+                    <div class="d-flex align-items-center">
+                        <img src="/assets/images/avatar-default.jpg" alt="Cliente" class="rounded-circle me-3" width="50" height="50">
+                        <div>
+                            <h6 class="mb-0">María González</h6>
+                            <small>Supervisora Industrial</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="testimonial-card p-4">
+                    <div class="stars mb-3">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <p class="mb-3">"El mejor servicio al cliente y productos que realmente protegen."</p>
+                    <div class="d-flex align-items-center">
+                        <img src="/assets/images/avatar-default.jpg" alt="Cliente" class="rounded-circle me-3" width="50" height="50">
+                        <div>
+                            <h6 class="mb-0">Roberto Silva</h6>
+                            <small>Director de Operaciones</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Newsletter -->
+<section class="py-5 bg-primary text-white">
+    <div class="container">
+        <div class="row justify-content-center text-center">
+            <div class="col-md-6">
+                <h3 class="mb-3">Mantente Informado</h3>
+                <p class="mb-4">Recibe ofertas especiales y novedades sobre nuestros productos.</p>
+                <form id="newsletter-form" class="d-flex">
+                    <input type="email" class="form-control me-2" placeholder="Tu email" required>
+                    <button type="submit" class="btn btn-light">Suscribirse</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.hero-section {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.feature-card {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+    height: 100%;
+}
+
+.feature-card:hover {
+    transform: translateY(-5px);
+}
+
+.testimonial-card {
+    height: 100%;
+}
+
+.stars {
+    font-size: 1.2rem;
+}
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+$(document).ready(function() {
+    // Cargar categorías
+    loadCategories();
+    
+    // Cargar productos destacados
+    loadFeaturedProducts();
+    
+    // Cargar productos recientes
+    loadRecentProducts();
+    
+    // Newsletter
+    $('#newsletter-form').on('submit', function(e) {
+        e.preventDefault();
+        const email = $(this).find('input[type="email"]').val();
+        
+        // Aquí se implementaría el envío del newsletter
+        Utils.showNotification('¡Gracias por suscribirte!', 'success');
+        $(this)[0].reset();
+    });
+});
+
+function loadCategories() {
+    API.get('/categorias')
+        .done(function(categories) {
+            const container = $('#categorias-container');
+            container.empty();
+            
+            categories.forEach(category => {
+                const categoryCard = $(`
+                    <div class="col-md-4 mb-4">
+                        <div class="category-card">
+                            <div class="category-icon">
+                                <i class="fas fa-${category.icono || 'tag'}"></i>
+                            </div>
+                            <h4 class="category-title">${Utils.sanitizeHtml(category.nombre)}</h4>
+                            <p class="category-description">${Utils.sanitizeHtml(category.descripcion || '')}</p>
+                            <a href="/categorias/${category.id}" class="btn btn-outline-primary">Ver Productos</a>
+                        </div>
+                    </div>
+                `);
+                
+                container.append(categoryCard);
+            });
+        })
+        .fail(function() {
+            $('#categorias-container').html(`
+                <div class="col-12 text-center">
+                    <p class="text-muted">Error al cargar las categorías</p>
+                </div>
+            `);
+        });
+}
+
+function loadFeaturedProducts() {
+    API.get('/productos/destacados')
+        .done(function(products) {
+            const container = $('#productos-destacados');
+            container.empty();
+            
+            products.slice(0, 6).forEach(product => {
+                const productCard = createProductCard(product);
+                container.append(productCard);
+            });
+        })
+        .fail(function() {
+            $('#productos-destacados').html(`
+                <div class="col-12 text-center">
+                    <p class="text-muted">Error al cargar los productos destacados</p>
+                </div>
+            `);
+        });
+}
+
+function loadRecentProducts() {
+    API.get('/productos')
+        .done(function(products) {
+            const container = $('#productos-recientes');
+            container.empty();
+            
+            // Ordenar por fecha de creación y tomar los más recientes
+            const recentProducts = products
+                .sort((a, b) => new Date(b.fecha_creacion) - new Date(a.fecha_creacion))
+                .slice(0, 6);
+            
+            recentProducts.forEach(product => {
+                const productCard = createProductCard(product);
+                container.append(productCard);
+            });
+        })
+        .fail(function() {
+            $('#productos-recientes').html(`
+                <div class="col-12 text-center">
+                    <p class="text-muted">Error al cargar los productos recientes</p>
+                </div>
+            `);
+        });
+}
+
+function createProductCard(product) {
+    return $(`
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="product-card">
+                <img src="${product.imagen_principal || '/assets/images/producto-default.jpg'}" 
+                     alt="${Utils.sanitizeHtml(product.nombre)}" 
+                     class="product-image">
+                <div class="product-info">
+                    <h5 class="product-title">${Utils.sanitizeHtml(product.nombre)}</h5>
+                    <p class="product-price">${Utils.formatPrice(product.precio)}</p>
+                    <p class="product-description">${Utils.sanitizeHtml(product.descripcion || '')}</p>
+                    <div class="product-actions">
+                        <button class="btn btn-primary btn-add-cart" 
+                                data-product-id="${product.id}">
+                            <i class="fas fa-cart-plus me-2"></i>Agregar
+                        </button>
+                        <a href="/productos/${product.id}" class="btn btn-outline-secondary">
+                            <i class="fas fa-eye"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `);
+}
+</script>
+{% endblock %}

@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ejemplo de Uso - Leopardo E-commerce</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="assets/css/main.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <img src="assets/logo-leopardo.jpeg" alt="Leopardo" height="40" class="me-2">
+                Leopardo E-commerce
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">Inicio</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/productos">Productos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/categorias">Categorías</a>
+                    </li>
+                </ul>
+                
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link position-relative" href="/carrito">
+                            <i class="fas fa-shopping-cart"></i>
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="cart-badge">
+                                0
+                            </span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/login">Iniciar Sesión</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container py-5">
+        <div class="row">
+            <div class="col-12">
+                <h1 class="mb-4">Ejemplo de Uso del Frontend</h1>
+                
+                <div class="alert alert-info">
+                    <h5><i class="fas fa-info-circle me-2"></i>Instrucciones de Uso</h5>
+                    <p>Este es un ejemplo de cómo usar el frontend de Leopardo E-commerce. Para usar la aplicación completa, abre el archivo <code>index.html</code>.</p>
+                </div>
+
+                <!-- Ejemplo de Tarjeta de Producto -->
+                <div class="row mb-5">
+                    <div class="col-12">
+                        <h3>Ejemplo de Tarjeta de Producto</h3>
+                        <div class="col-lg-4 col-md-6 mb-4">
+                            <div class="product-card">
+                                <img src="assets/producto-default.jpg" 
+                                     alt="Botas de Seguridad" 
+                                     class="product-image">
+                                <div class="product-info">
+                                    <h5 class="product-title">Botas de Seguridad Industrial</h5>
+                                    <p class="product-price">$89,900</p>
+                                    <p class="product-description">Botas de seguridad con puntera de acero y suela antideslizante. Ideal para trabajos industriales.</p>
+                                    <div class="product-actions">
+                                        <button class="btn btn-primary btn-add-cart" data-product-id="1">
+                                            <i class="fas fa-cart-plus me-2"></i>Agregar
+                                        </button>
+                                        <a href="/productos/1" class="btn btn-outline-secondary">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ejemplo de Filtros -->
+                <div class="row mb-5">
+                    <div class="col-12">
+                        <h3>Ejemplo de Filtros</h3>
+                        <div class="filter-section">
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" placeholder="Buscar productos...">
+                                        <button class="btn btn-outline-secondary" type="button">
+                                            <i class="fas fa-search"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-3 mb-3">
+                                    <label class="form-label">Categoría</label>
+                                    <select class="form-select">
+                                        <option value="">Todas las categorías</option>
+                                        <option value="1">Botas de Seguridad</option>
+                                        <option value="2">Zapatos Industriales</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <label class="form-label">Rango de Precio</label>
+                                    <select class="form-select">
+                                        <option value="">Todos los precios</option>
+                                        <option value="0-50000">$0 - $50,000</option>
+                                        <option value="50000-100000">$50,000 - $100,000</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <label class="form-label">Ordenar por</label>
+                                    <select class="form-select">
+                                        <option value="nombre">Nombre</option>
+                                        <option value="precio_asc">Precio: menor a mayor</option>
+                                        <option value="precio_desc">Precio: mayor a menor</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ejemplo de Carrito -->
+                <div class="row mb-5">
+                    <div class="col-12">
+                        <h3>Ejemplo de Carrito de Compras</h3>
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0">Productos en tu carrito</h5>
+                            </div>
+                            <div class="card-body p-0">
+                                <div class="cart-item">
+                                    <div class="row align-items-center">
+                                        <div class="col-md-2">
+                                            <img src="assets/producto-default.jpg" 
+                                                 alt="Botas de Seguridad" 
+                                                 class="cart-item-image">
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="cart-item-info">
+                                                <h6 class="cart-item-title">Botas de Seguridad Industrial</h6>
+                                                <p class="cart-item-price">$89,900</p>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="cart-item-actions">
+                                                <div class="quantity-controls">
+                                                    <button class="btn btn-outline-secondary btn-sm quantity-btn">
+                                                        <i class="fas fa-minus"></i>
+                                                    </button>
+                                                    <input type="number" class="form-control quantity-input" value="1" min="1">
+                                                    <button class="btn btn-outline-secondary btn-sm quantity-btn">
+                                                        <i class="fas fa-plus"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="cart-item-total">
+                                                <strong>$89,900</strong>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-1">
+                                            <button class="btn btn-outline-danger btn-sm">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ejemplo de Formulario de Login -->
+                <div class="row mb-5">
+                    <div class="col-md-6">
+                        <h3>Ejemplo de Formulario de Login</h3>
+                        <div class="card">
+                            <div class="card-header bg-primary text-white">
+                                <h5 class="mb-0">Iniciar Sesión</h5>
+                            </div>
+                            <div class="card-body">
+                                <form>
+                                    <div class="mb-3">
+                                        <label class="form-label">Email</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text">
+                                                <i class="fas fa-envelope"></i>
+                                            </span>
+                                            <input type="email" class="form-control" placeholder="tu@email.com">
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label class="form-label">Contraseña</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text">
+                                                <i class="fas fa-lock"></i>
+                                            </span>
+                                            <input type="password" class="form-control" placeholder="Tu contraseña">
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="d-grid">
+                                        <button type="submit" class="btn btn-primary">
+                                            <i class="fas fa-sign-in-alt me-2"></i>
+                                            Iniciar Sesión
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <h3>Ejemplo de Formulario de Registro</h3>
+                        <div class="card">
+                            <div class="card-header bg-success text-white">
+                                <h5 class="mb-0">Crear Cuenta</h5>
+                            </div>
+                            <div class="card-body">
+                                <form>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">Nombre</label>
+                                            <input type="text" class="form-control" placeholder="Tu nombre">
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">Apellido</label>
+                                            <input type="text" class="form-control" placeholder="Tu apellido">
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label class="form-label">Email</label>
+                                        <input type="email" class="form-control" placeholder="tu@email.com">
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label class="form-label">Contraseña</label>
+                                        <input type="password" class="form-control" placeholder="Mínimo 6 caracteres">
+                                    </div>
+                                    
+                                    <div class="d-grid">
+                                        <button type="submit" class="btn btn-success">
+                                            <i class="fas fa-user-plus me-2"></i>
+                                            Crear Cuenta
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Botones de Acción -->
+                <div class="row">
+                    <div class="col-12">
+                        <h3>Botones de Acción</h3>
+                        <div class="d-flex gap-2 flex-wrap">
+                            <button class="btn btn-primary">
+                                <i class="fas fa-cart-plus me-2"></i>
+                                Agregar al Carrito
+                            </button>
+                            <button class="btn btn-success">
+                                <i class="fas fa-check me-2"></i>
+                                Confirmar Pedido
+                            </button>
+                            <button class="btn btn-warning">
+                                <i class="fas fa-edit me-2"></i>
+                                Editar
+                            </button>
+                            <button class="btn btn-danger">
+                                <i class="fas fa-trash me-2"></i>
+                                Eliminar
+                            </button>
+                            <button class="btn btn-info">
+                                <i class="fas fa-info-circle me-2"></i>
+                                Información
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-light py-4 mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <h5>Leopardo E-commerce</h5>
+                    <p>Tu tienda de confianza para calzado de seguridad industrial.</p>
+                </div>
+                <div class="col-md-4">
+                    <h5>Enlaces Rápidos</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="/" class="text-light">Inicio</a></li>
+                        <li><a href="/productos" class="text-light">Productos</a></li>
+                        <li><a href="/categorias" class="text-light">Categorías</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h5>Contacto</h5>
+                    <p><i class="fas fa-phone"></i> +1 (555) 123-4567</p>
+                    <p><i class="fas fa-envelope"></i> info@leopardo.com</p>
+                </div>
+            </div>
+            <hr>
+            <div class="text-center">
+                <p>&copy; 2024 Leopardo E-commerce. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Ejemplo de uso de los componentes
+        $(document).ready(function() {
+            console.log('Ejemplo de uso cargado');
+            
+            // Ejemplo de notificación
+            setTimeout(() => {
+                if (typeof Utils !== 'undefined') {
+                    Utils.showNotification('¡Bienvenido al ejemplo de uso!', 'success');
+                }
+            }, 1000);
+        });
+    </script>
+</body>
+</html>
+
+

@@ -1,0 +1,424 @@
+{% extends "layouts/main.html" %}
+
+{% block title %}Carrito de Compras - Leopardo E-commerce{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-12">
+            <h2 class="mb-4">
+                <i class="fas fa-shopping-cart me-2"></i>
+                Carrito de Compras
+            </h2>
+        </div>
+    </div>
+    
+    <div class="row">
+        <!-- Items del Carrito -->
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Productos en tu carrito</h5>
+                    <button class="btn btn-outline-danger btn-sm clear-cart" id="clear-cart-btn">
+                        <i class="fas fa-trash me-1"></i>
+                        Vaciar Carrito
+                    </button>
+                </div>
+                <div class="card-body p-0">
+                    <div id="cart-items">
+                        <!-- Se llena dinámicamente -->
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Código de Descuento -->
+            <div class="card mt-4">
+                <div class="card-body">
+                    <h6 class="card-title">
+                        <i class="fas fa-tag me-2"></i>
+                        Código de Descuento
+                    </h6>
+                    <div class="row">
+                        <div class="col-md-8">
+                            <input type="text" 
+                                   class="form-control" 
+                                   id="discount-code" 
+                                   placeholder="Ingresa tu código de descuento">
+                        </div>
+                        <div class="col-md-4">
+                            <button class="btn btn-outline-primary w-100" id="apply-discount">
+                                Aplicar
+                            </button>
+                        </div>
+                    </div>
+                    <div id="discount-message" class="mt-2"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Resumen del Pedido -->
+        <div class="col-lg-4">
+            <div class="card cart-summary">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-receipt me-2"></i>
+                        Resumen del Pedido
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div id="cart-summary">
+                        <!-- Se llena dinámicamente -->
+                    </div>
+                    
+                    <hr>
+                    
+                    <!-- Información de Envío -->
+                    <div class="mb-3">
+                        <h6>
+                            <i class="fas fa-shipping-fast me-2"></i>
+                            Información de Envío
+                        </h6>
+                        <div class="row">
+                            <div class="col-6">
+                                <small class="text-muted">Costo de envío:</small>
+                                <div class="fw-bold" id="shipping-cost">$0</div>
+                            </div>
+                            <div class="col-6">
+                                <small class="text-muted">Tiempo estimado:</small>
+                                <div class="fw-bold">1-2 días</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <hr>
+                    
+                    <!-- Total -->
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="mb-0">Total:</h5>
+                        <h4 class="mb-0 text-primary" id="cart-total">$0</h4>
+                    </div>
+                    
+                    <!-- Botones de Acción -->
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-primary btn-lg checkout-btn" id="proceed-checkout">
+                            <i class="fas fa-credit-card me-2"></i>
+                            Proceder al Pago
+                        </button>
+                        <a href="/" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left me-2"></i>
+                            Continuar Comprando
+                        </a>
+                    </div>
+                    
+                    <!-- Información de Seguridad -->
+                    <div class="mt-4 text-center">
+                        <small class="text-muted">
+                            <i class="fas fa-lock me-1"></i>
+                            Compra 100% segura
+                        </small>
+                        <div class="mt-2">
+                            <img src="/assets/images/payment-methods.png" 
+                                 alt="Métodos de pago" 
+                                 class="img-fluid" 
+                                 style="max-height: 30px;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Productos Recomendados -->
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h6 class="mb-0">
+                        <i class="fas fa-star me-2"></i>
+                        También te puede interesar
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div id="recommended-products">
+                        <!-- Se llena dinámicamente -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Confirmación para Vaciar Carrito -->
+<div class="modal fade" id="clearCartModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-exclamation-triangle text-warning me-2"></i>
+                    Confirmar Acción
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>¿Estás seguro de que quieres vaciar tu carrito de compras?</p>
+                <p class="text-muted small">Esta acción no se puede deshacer.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    Cancelar
+                </button>
+                <button type="button" class="btn btn-danger" id="confirm-clear-cart">
+                    <i class="fas fa-trash me-1"></i>
+                    Vaciar Carrito
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.cart-item {
+    border-bottom: 1px solid #dee2e6;
+    padding: 1.5rem;
+}
+
+.cart-item:last-child {
+    border-bottom: none;
+}
+
+.cart-item-image {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.cart-item-title {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #212529;
+}
+
+.cart-item-price {
+    color: #0d6efd;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.quantity-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.quantity-input {
+    width: 60px;
+    text-align: center;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    padding: 0.25rem;
+}
+
+.quantity-btn {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    padding: 0;
+}
+
+.cart-summary {
+    position: sticky;
+    top: 2rem;
+}
+
+.cart-summary-items {
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.recommended-product {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid #f8f9fa;
+}
+
+.recommended-product:last-child {
+    border-bottom: none;
+}
+
+.recommended-product img {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 4px;
+    margin-right: 0.75rem;
+}
+
+.recommended-product-info {
+    flex: 1;
+}
+
+.recommended-product-title {
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+}
+
+.recommended-product-price {
+    font-size: 0.8rem;
+    color: #0d6efd;
+    font-weight: 600;
+}
+
+@media (max-width: 768px) {
+    .cart-item {
+        text-align: center;
+    }
+    
+    .cart-item-actions {
+        justify-content: center;
+        margin-top: 1rem;
+    }
+    
+    .cart-summary {
+        position: static;
+        margin-top: 2rem;
+    }
+}
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+$(document).ready(function() {
+    // Cargar carrito
+    CartManager.load();
+    
+    // Cargar productos recomendados
+    loadRecommendedProducts();
+    
+    // Event listeners
+    setupCartEventListeners();
+});
+
+function setupCartEventListeners() {
+    // Vaciar carrito
+    $('#clear-cart-btn').on('click', function() {
+        $('#clearCartModal').modal('show');
+    });
+    
+    $('#confirm-clear-cart').on('click', function() {
+        CartManager.clear();
+        $('#clearCartModal').modal('hide');
+    });
+    
+    // Aplicar descuento
+    $('#apply-discount').on('click', function() {
+        const code = $('#discount-code').val().trim();
+        
+        if (!code) {
+            Utils.showNotification('Por favor, ingresa un código de descuento', 'error');
+            return;
+        }
+        
+        // Aquí se implementaría la lógica de descuentos
+        Utils.showNotification('Código de descuento aplicado correctamente', 'success');
+        $('#discount-message').html(`
+            <div class="alert alert-success alert-sm">
+                <i class="fas fa-check me-1"></i>
+                Descuento del 10% aplicado
+            </div>
+        `);
+    });
+    
+    // Enter en código de descuento
+    $('#discount-code').on('keypress', function(e) {
+        if (e.which === 13) {
+            $('#apply-discount').click();
+        }
+    });
+    
+    // Proceder al checkout
+    $('#proceed-checkout').on('click', function() {
+        if (!AuthManager.requireAuth()) {
+            return;
+        }
+        
+        if (!CartManager.validateCart()) {
+            return;
+        }
+        
+        window.location.href = '/checkout';
+    });
+}
+
+function loadRecommendedProducts() {
+    API.get('/productos/destacados')
+        .done(function(products) {
+            const container = $('#recommended-products');
+            container.empty();
+            
+            // Tomar 3 productos aleatorios
+            const shuffled = products.sort(() => 0.5 - Math.random());
+            const recommended = shuffled.slice(0, 3);
+            
+            recommended.forEach(product => {
+                const productElement = $(`
+                    <div class="recommended-product">
+                        <img src="${product.imagen_principal || '/assets/images/producto-default.jpg'}" 
+                             alt="${Utils.sanitizeHtml(product.nombre)}">
+                        <div class="recommended-product-info">
+                            <div class="recommended-product-title">
+                                ${Utils.sanitizeHtml(product.nombre)}
+                            </div>
+                            <div class="recommended-product-price">
+                                ${Utils.formatPrice(product.precio)}
+                            </div>
+                        </div>
+                        <button class="btn btn-sm btn-outline-primary add-to-cart" 
+                                data-product-id="${product.id}">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                    </div>
+                `);
+                
+                container.append(productElement);
+            });
+        })
+        .fail(function() {
+            $('#recommended-products').html(`
+                <div class="text-center text-muted">
+                    <small>Error al cargar productos recomendados</small>
+                </div>
+            `);
+        });
+}
+
+// Actualizar costo de envío
+function updateShippingCost() {
+    const total = AppState.cart.total;
+    let shippingCost = 0;
+    
+    if (total > 0 && total < 100000) {
+        shippingCost = 15000; // $15,000 COP
+    } else if (total >= 100000) {
+        shippingCost = 0; // Envío gratis
+    }
+    
+    $('#shipping-cost').text(Utils.formatPrice(shippingCost));
+    
+    // Actualizar total con envío
+    const finalTotal = total + shippingCost;
+    $('#cart-total').text(Utils.formatPrice(finalTotal));
+}
+
+// Override del updateUI de CartManager para incluir costo de envío
+const originalUpdateUI = CartManager.updateUI;
+CartManager.updateUI = function() {
+    originalUpdateUI.call(this);
+    updateShippingCost();
+};
+</script>
+{% endblock %}

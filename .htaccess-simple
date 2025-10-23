@@ -1,0 +1,15 @@
+RewriteEngine On
+
+# Si la ruta empieza con /api, redirigir a index.php para procesar la API
+RewriteCond %{REQUEST_URI} ^/api
+RewriteRule ^(.*)$ /index.php [QSA,L]
+
+# Redirigir todo lo demás a index.html excepto archivos existentes
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_URI} !^/api
+RewriteRule . /index.html [L]
+
+# Configurar tipos MIME
+AddType application/javascript .js
+AddType text/css .css

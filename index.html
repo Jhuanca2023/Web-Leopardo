@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leopardo E-commerce - Calzado de Seguridad Industrial</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="/assets/css/main.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="navbar navbar-expand-lg navbar-dark" id="site-header">
+            <div class="navContainer">
+            <a class="navbar-brand" href="/">
+                <img src="/assets/images/logo-leopardo-new.png" alt="Leopardo" height="40" class="me-2">
+            </a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">Inicio</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            Categorías
+                        </a>
+                        <ul class="dropdown-menu" id="categorias-menu">
+                            <!-- Se llena dinámicamente -->
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/productos">Productos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/quienes-somos">¿Quiénes Somos?</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/contacto">Contáctanos</a>
+                    </li>
+                </ul>
+                
+                <!-- Búsqueda -->
+                <form class="d-flex me-3" id="search-form">
+                    <input class="form-control me-2" type="search" placeholder="Buscar productos..." id="global-search">
+                    <button class="btn btn-outline-light" type="submit">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </form>
+                
+                <ul class="navbar-nav">
+                    <!-- Carrito -->
+                    <li class="nav-item">
+                        <a class="nav-link position-relative" href="/carrito" id="cart-link">
+                            <i class="fas fa-shopping-cart"></i>
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="cart-badge">
+                                0
+                            </span>
+                        </a>
+                    </li>
+                    
+                    <!-- Usuario -->
+                    <li class="nav-item dropdown" id="user-menu" style="display: none;">
+                        <a class="nav-link dropdown-toggle nav-link-user" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-user"></i>
+                            <span id="user-name"></span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="/perfil">Mi Perfil</a></li>
+                            <!-- Panel Administrador solo para usuarios autenticados -->
+                            <li id="admin-panel-menu" style="display:none;"><a class="dropdown-item" href="/admin">Panel Administrador</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="#" id="logout-btn">Cerrar Sesión</a></li>
+                        </ul>
+                    </li>
+                    
+                    <!-- Login/Register -->
+                    <li class="nav-item" id="auth-menu">
+                        <a class="nav-link" href="/login">Iniciar Sesión</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main id="main-content">
+        <!-- El contenido se carga dinámicamente aquí -->
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-light py-4 mt-5" id="site-footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 text-center text-md-start">
+                    <img src="/assets/images/logo-leopardo-new.png" alt="Leopardo" height="40" class="me-2">
+                    <h6 class="text-warning mt-2">CALZADO INDUSTRIAL LEOPARDO</h6>
+                    <p class="small">"Hecho en Perú, hecho para resistir."</p>
+                    <p>Empresa peruana líder en calzado de seguridad industrial desde 1999.</p>
+                    
+                    <!-- Redes Sociales -->
+                    <div class="d-flex gap-2 mt-3 justify-content-center justify-content-md-start">
+                        <a href="https://www.facebook.com/calzadoindustrialeopardo/" target="_blank" class="text-light">
+                            <i class="fab fa-facebook fs-5"></i>
+                        </a>
+                        <a href="https://www.instagram.com/calzadoindustrialleopardo/" target="_blank" class="text-light">
+                            <i class="fab fa-instagram fs-5"></i>
+                        </a>
+                        <a href="https://www.tiktok.com/@calzadoindustrialeopardo" target="_blank" class="text-light">
+                            <i class="fab fa-tiktok fs-5"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="col-md-4 text-center text-md-start">
+                    <div class="d-flex justify-content-center justify-content-md-start">
+                        <i class="fa-solid fa-link me-2 mt-1 custom-icon"></i>
+                        <div>
+                            <h5 class="mb-3">Enlaces Rápidos</h5>
+                            <ul class="list-unstyled mb-0">
+                                <li class="mb-1"><a href="/" class="text-light text-decoration-none"><i class="fas fa-home me-2"></i>Inicio</a></li>
+                                <li class="mb-1"><a href="/productos" class="text-light text-decoration-none"><i class="fas fa-shoe-prints me-2"></i>Productos</a></li>
+                                <li class="mb-1"><a href="/quienes-somos" class="text-light text-decoration-none"><i class="fas fa-building me-2"></i>Quiénes Somos</a></li>
+                                <li class="mb-1"><a href="/contacto" class="text-light text-decoration-none"><i class="fas fa-phone me-2"></i>Contacto</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4 text-center text-md-start">
+                    <div class="d-flex justify-content-center justify-content-md-start">
+                        <i class="fas fa-address-card me-2 mt-1 custom-icon"></i>
+                        <div>
+                            <h5 class="mb-3">Contacto</h5>
+                            <p class="mb-1">
+                                <i class="fas fa-phone me-2" style="width: 16px; text-align: center;"></i>
+                                <a href="tel:+51940870622" class="text-light text-decoration-none">
+                                    940 870 622
+                                </a>
+                            </p>
+                            <p class="mb-1">
+                                <i class="fab fa-facebook me-2" style="width: 16px; text-align: center;"></i>
+                                <a href="https://www.facebook.com/calzadoindustrialeopardo/" target="_blank" class="text-light text-decoration-none">
+                                    Facebook
+                                </a>
+                            </p>
+                            <p class="mb-1">
+                                <i class="fab fa-instagram me-2" style="width: 16px; text-align: center;"></i>
+                                <a href="https://www.instagram.com/calzadoindustrialleopardo/" target="_blank" class="text-light text-decoration-none">
+                                    Instagram
+                                </a>
+                            </p>
+                            <p class="mb-1">
+                                <i class="fab fa-tiktok me-2" style="width: 16px; text-align: center;"></i>
+                                <a href="https://www.tiktok.com/@calzadoindustrialeopardo" target="_blank" class="text-light text-decoration-none">
+                                    TikTok
+                                </a>
+                            </p>
+                            <p class="mb-0 small">
+                                <i class="fas fa-map-marker-alt me-2" style="width: 16px; text-align: center;"></i>
+                                <a href="https://maps.app.goo.gl/LM1RsCbrkPi6xTRt5" target="_blank" class="text-light text-decoration-none">
+                                    Puente Piedra - Lima
+                                </a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <div class="text-center">
+                <p class="mb-1">&copy; 2024 <strong>CORPORACIÓN G&S LEOPARDO S.A.C.</strong> Todos los derechos reservados.</p>
+                <p class="small text-muted mb-0">Empresa peruana líder en fabricación y comercialización de calzado de seguridad e industrial de alta calidad desde 1999.</p>
+            </div>
+        </div>
+    </footer>
+    
+<!-- WhatsApp Icon -->
+<a href="https://wa.me/51940870622?text=Hola,%20estoy%20interesado%20en%20los%20calzados%20de%20seguridad%20que%20ofrecen.%20¿Podrían%20brindarme%20más%20información?" 
+   class="whatsapp-float" 
+   target="_blank" 
+   aria-label="Contactar por WhatsApp">
+    <i class="fab fa-whatsapp"></i>
+</a>
+
+
+    <!-- Loading Modal -->
+    <div class="modal fade" id="loadingModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-body text-center">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Cargando...</span>
+                    </div>
+                    <p class="mt-3">Procesando...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Alert Container -->
+    <div id="alert-container" class="position-fixed top-0 end-0 p-3" style="z-index: 1050;"></div>
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- EmailJS -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <!-- Custom JS -->
+    <script src="/assets/js/error-handler.js"></script>
+    <script src="/assets/js/email-config.js"></script>
+    <script src="/assets/js/app.js"></script>
+    <script src="/assets/js/components.js"></script>
+    <script src="/assets/js/auth.js"></script>
+    <script src="/assets/js/cart.js"></script>
+    
+    <!-- Router -->
+    <script src="/assets/js/router.js"></script>
+</body>
+</html>
+
+
+

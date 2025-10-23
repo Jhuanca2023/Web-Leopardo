@@ -1,0 +1,449 @@
+{% extends "layouts/main.html" %}
+
+{% block title %}Registrarse - Leopardo E-commerce{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white text-center">
+                    <h4 class="mb-0">
+                        <i class="fas fa-user-plus me-2"></i>
+                        Crear Cuenta
+                    </h4>
+                </div>
+                <div class="card-body p-4">
+                    <!-- Formulario de Registro -->
+                    <form id="register-form">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="register-name" class="form-label">Nombre Completo *</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">
+                                            <i class="fas fa-user"></i>
+                                        </span>
+                                        <input type="text" 
+                                               class="form-control" 
+                                               id="register-name" 
+                                               name="name" 
+                                               placeholder="Tu nombre completo" 
+                                               required>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="register-email" class="form-label">Email *</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">
+                                            <i class="fas fa-envelope"></i>
+                                        </span>
+                                        <input type="email" 
+                                               class="form-control" 
+                                               id="register-email" 
+                                               name="email" 
+                                               placeholder="tu@email.com" 
+                                               required>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="register-password" class="form-label">Contraseña *</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">
+                                            <i class="fas fa-lock"></i>
+                                        </span>
+                                        <input type="password" 
+                                               class="form-control" 
+                                               id="register-password" 
+                                               name="password" 
+                                               placeholder="Mínimo 6 caracteres" 
+                                               required>
+                                        <button class="btn btn-outline-secondary" 
+                                                type="button" 
+                                                id="toggle-password">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </div>
+                                    <div class="form-text">
+                                        <small id="password-strength" class="text-muted"></small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="register-confirm-password" class="form-label">Confirmar Contraseña *</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">
+                                            <i class="fas fa-lock"></i>
+                                        </span>
+                                        <input type="password" 
+                                               class="form-control" 
+                                               id="register-confirm-password" 
+                                               name="confirm_password" 
+                                               placeholder="Repite tu contraseña" 
+                                               required>
+                                    </div>
+                                    <div class="form-text">
+                                        <small id="password-match" class="text-muted"></small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="register-telefono" class="form-label">Teléfono</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">
+                                            <i class="fas fa-phone"></i>
+                                        </span>
+                                        <input type="tel" 
+                                               class="form-control" 
+                                               id="register-telefono" 
+                                               name="telefono" 
+                                               placeholder="+57 300 123 4567">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="register-empresa" class="form-label">Empresa</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">
+                                            <i class="fas fa-building"></i>
+                                        </span>
+                                        <input type="text" 
+                                               class="form-control" 
+                                               id="register-empresa" 
+                                               name="empresa" 
+                                               placeholder="Nombre de tu empresa">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="register-direccion" class="form-label">Dirección</label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                </span>
+                                <textarea class="form-control" 
+                                          id="register-direccion" 
+                                          name="direccion" 
+                                          rows="2" 
+                                          placeholder="Tu dirección completa"></textarea>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" id="terms-accept" required>
+                            <label class="form-check-label" for="terms-accept">
+                                Acepto los <a href="/terminos" target="_blank" class="text-decoration-none">términos y condiciones</a> 
+                                y la <a href="/privacidad" target="_blank" class="text-decoration-none">política de privacidad</a> *
+                            </label>
+                        </div>
+                        
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" id="newsletter-subscribe">
+                            <label class="form-check-label" for="newsletter-subscribe">
+                                Quiero recibir ofertas especiales y novedades por email
+                            </label>
+                        </div>
+                        
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="fas fa-user-plus me-2"></i>
+                                Crear Cuenta
+                            </button>
+                        </div>
+                    </form>
+                    
+                    <hr class="my-4">
+                    
+                    <!-- Enlaces adicionales -->
+                    <div class="text-center">
+                        <p class="mb-0">
+                            ¿Ya tienes cuenta? 
+                            <a href="/login" class="text-decoration-none fw-bold">
+                                Inicia sesión aquí
+                            </a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Beneficios de registrarse -->
+            <div class="card mt-4">
+                <div class="card-body">
+                    <h6 class="card-title text-center mb-4">
+                        <i class="fas fa-gift text-primary me-2"></i>
+                        Beneficios de tener una cuenta
+                    </h6>
+                    <div class="row text-center">
+                        <div class="col-md-4 mb-3">
+                            <i class="fas fa-history fa-2x text-primary mb-2"></i>
+                            <h6>Historial de Pedidos</h6>
+                            <small class="text-muted">Accede a todos tus pedidos anteriores</small>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <i class="fas fa-heart fa-2x text-primary mb-2"></i>
+                            <h6>Lista de Deseos</h6>
+                            <small class="text-muted">Guarda productos para más tarde</small>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <i class="fas fa-percentage fa-2x text-primary mb-2"></i>
+                            <h6>Ofertas Exclusivas</h6>
+                            <small class="text-muted">Descuentos especiales solo para ti</small>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <i class="fas fa-shipping-fast fa-2x text-primary mb-2"></i>
+                            <h6>Envío Rápido</h6>
+                            <small class="text-muted">Direcciones guardadas</small>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <i class="fas fa-bell fa-2x text-primary mb-2"></i>
+                            <h6>Notificaciones</h6>
+                            <small class="text-muted">Estado de tus pedidos</small>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <i class="fas fa-headset fa-2x text-primary mb-2"></i>
+                            <h6>Soporte Prioritario</h6>
+                            <small class="text-muted">Atención personalizada</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.card {
+    border: none;
+    border-radius: 15px;
+}
+
+.card-header {
+    border-radius: 15px 15px 0 0 !important;
+}
+
+.input-group-text {
+    background-color: #f8f9fa;
+    border-right: none;
+}
+
+.form-control {
+    border-left: none;
+}
+
+.form-control:focus {
+    border-left: none;
+    box-shadow: none;
+}
+
+.input-group:focus-within .input-group-text {
+    border-color: #0d6efd;
+}
+
+.btn-lg {
+    padding: 0.75rem 1.5rem;
+    font-size: 1.1rem;
+}
+
+.password-strength {
+    font-size: 0.8rem;
+}
+
+.password-strength.weak {
+    color: #dc3545;
+}
+
+.password-strength.medium {
+    color: #ffc107;
+}
+
+.password-strength.strong {
+    color: #198754;
+}
+
+.password-match {
+    font-size: 0.8rem;
+}
+
+.password-match.match {
+    color: #198754;
+}
+
+.password-match.no-match {
+    color: #dc3545;
+}
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+$(document).ready(function() {
+    // Toggle password visibility
+    $('#toggle-password').on('click', function() {
+        const passwordInput = $('#register-password');
+        const icon = $(this).find('i');
+        
+        if (passwordInput.attr('type') === 'password') {
+            passwordInput.attr('type', 'text');
+            icon.removeClass('fa-eye').addClass('fa-eye-slash');
+        } else {
+            passwordInput.attr('type', 'password');
+            icon.removeClass('fa-eye-slash').addClass('fa-eye');
+        }
+    });
+    
+    // Password strength checker
+    $('#register-password').on('input', function() {
+        const password = $(this).val();
+        const strengthIndicator = $('#password-strength');
+        
+        if (password.length === 0) {
+            strengthIndicator.text('');
+            return;
+        }
+        
+        let strength = 0;
+        let message = '';
+        
+        if (password.length >= 6) strength++;
+        if (password.match(/[a-z]/)) strength++;
+        if (password.match(/[A-Z]/)) strength++;
+        if (password.match(/[0-9]/)) strength++;
+        if (password.match(/[^a-zA-Z0-9]/)) strength++;
+        
+        if (strength < 2) {
+            message = 'Contraseña débil';
+            strengthIndicator.removeClass('medium strong').addClass('weak');
+        } else if (strength < 4) {
+            message = 'Contraseña media';
+            strengthIndicator.removeClass('weak strong').addClass('medium');
+        } else {
+            message = 'Contraseña fuerte';
+            strengthIndicator.removeClass('weak medium').addClass('strong');
+        }
+        
+        strengthIndicator.text(message);
+    });
+    
+    // Password match checker
+    $('#register-confirm-password').on('input', function() {
+        const password = $('#register-password').val();
+        const confirmPassword = $(this).val();
+        const matchIndicator = $('#password-match');
+        
+        if (confirmPassword.length === 0) {
+            matchIndicator.text('');
+            return;
+        }
+        
+        if (password === confirmPassword) {
+            matchIndicator.text('✓ Las contraseñas coinciden');
+            matchIndicator.removeClass('no-match').addClass('match');
+        } else {
+            matchIndicator.text('✗ Las contraseñas no coinciden');
+            matchIndicator.removeClass('match').addClass('no-match');
+        }
+    });
+    
+    // Email validation
+    $('#register-email').on('blur', function() {
+        const email = $(this).val();
+        if (email && !Utils.validateEmail(email)) {
+            $(this).addClass('is-invalid');
+        } else {
+            $(this).removeClass('is-invalid');
+        }
+    });
+    
+    // Phone number formatting
+    $('#register-telefono').on('input', function() {
+        let value = $(this).val().replace(/\D/g, '');
+        if (value.length > 0) {
+            if (value.length <= 3) {
+                value = `+57 ${value}`;
+            } else if (value.length <= 6) {
+                value = `+57 ${value.slice(3)}`;
+            } else if (value.length <= 9) {
+                value = `+57 ${value.slice(3, 6)} ${value.slice(6)}`;
+            } else {
+                value = `+57 ${value.slice(3, 6)} ${value.slice(6, 9)} ${value.slice(9, 12)}`;
+            }
+        }
+        $(this).val(value);
+    });
+    
+    // Form validation
+    $('#register-form').on('submit', function(e) {
+        e.preventDefault();
+        
+        // Validar términos y condiciones
+        if (!$('#terms-accept').is(':checked')) {
+            Utils.showNotification('Debes aceptar los términos y condiciones', 'error');
+            return;
+        }
+        
+        // Validar contraseñas
+        const password = $('#register-password').val();
+        const confirmPassword = $('#register-confirm-password').val();
+        
+        if (password !== confirmPassword) {
+            Utils.showNotification('Las contraseñas no coinciden', 'error');
+            return;
+        }
+        
+        if (password.length < 6) {
+            Utils.showNotification('La contraseña debe tener al menos 6 caracteres', 'error');
+            return;
+        }
+        
+        // Recopilar datos del formulario
+        const formData = {
+            name: $('#register-name').val().trim(),
+            email: $('#register-email').val().trim(),
+            password: password,
+            confirm_password: confirmPassword,
+            telefono: $('#register-telefono').val().trim(),
+            direccion: $('#register-direccion').val().trim()
+        };
+        
+        // Validar campos requeridos
+        if (!formData.name || !formData.email || !formData.password) {
+            Utils.showNotification('Por favor, completa todos los campos requeridos', 'error');
+            return;
+        }
+        
+        // Enviar registro
+        AuthManager.register(formData);
+    });
+    
+    // Limpiar validaciones al escribir
+    $('#register-form input, #register-form textarea').on('input', function() {
+        $(this).removeClass('is-invalid');
+    });
+    
+    // Auto-focus en el primer campo
+    $('#register-name').focus();
+    
+    // Redirigir si ya está autenticado
+    if (AuthManager.isAuthenticated()) {
+        window.location.href = '/';
+    }
+});
+</script>
+{% endblock %}

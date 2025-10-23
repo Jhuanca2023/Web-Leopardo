@@ -1,0 +1,109 @@
+# Leopardo E-commerce - Configuración Apache
+
+# Habilitar mod_rewrite
+RewriteEngine On
+
+# Si la ruta empieza con /api, redirigir a index.php para procesar la API
+RewriteCond %{REQUEST_URI} ^/api
+RewriteRule ^(.*)$ /index.php [QSA,L]
+
+# Redirigir todas las rutas a index.html para SPA
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_URI} !^/api
+RewriteCond %{REQUEST_URI} !^/assets/
+RewriteCond %{REQUEST_URI} !^/index\.html$
+RewriteRule ^(.*)$ /index.html [QSA,L]
+
+# Configurar headers de seguridad
+<IfModule mod_headers.c>
+    # Prevenir clickjacking
+    Header always append X-Frame-Options SAMEORIGIN
+    
+    # Prevenir MIME type sniffing
+    Header set X-Content-Type-Options nosniff
+    
+    # Habilitar XSS protection
+    Header set X-XSS-Protection "1; mode=block"
+    
+    # Configurar CORS para assets
+    <FilesMatch "\.(css|js|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot)$">
+        Header set Access-Control-Allow-Origin "*"
+    </FilesMatch>
+</IfModule>
+
+# Configurar compresión
+<IfModule mod_deflate.c>
+    # Comprimir archivos de texto
+    AddOutputFilterByType DEFLATE text/plain
+    AddOutputFilterByType DEFLATE text/html
+    AddOutputFilterByType DEFLATE text/xml
+    AddOutputFilterByType DEFLATE text/css
+    AddOutputFilterByType DEFLATE application/xml
+    AddOutputFilterByType DEFLATE application/xhtml+xml
+    AddOutputFilterByType DEFLATE application/rss+xml
+    AddOutputFilterByType DEFLATE application/javascript
+    AddOutputFilterByType DEFLATE application/x-javascript
+    AddOutputFilterByType DEFLATE application/json
+</IfModule>
+
+# Configurar caché
+<IfModule mod_expires.c>
+    ExpiresActive On
+    
+    # Imágenes
+    ExpiresByType image/jpg "access plus 1 month"
+    ExpiresByType image/jpeg "access plus 1 month"
+    ExpiresByType image/gif "access plus 1 month"
+    ExpiresByType image/png "access plus 1 month"
+    ExpiresByType image/svg+xml "access plus 1 month"
+    ExpiresByType image/webp "access plus 1 month"
+    
+    # CSS y JavaScript
+    ExpiresByType text/css "access plus 1 month"
+    ExpiresByType application/javascript "access plus 1 month"
+    ExpiresByType application/x-javascript "access plus 1 month"
+    
+    # Fuentes
+    ExpiresByType font/woff "access plus 1 year"
+    ExpiresByType font/woff2 "access plus 1 year"
+    ExpiresByType application/font-woff "access plus 1 year"
+    ExpiresByType application/font-woff2 "access plus 1 year"
+    
+    # HTML
+    ExpiresByType text/html "access plus 1 hour"
+</IfModule>
+
+# Configurar tipos MIME
+<IfModule mod_mime.c>
+    # Fuentes web
+    AddType font/woff woff
+    AddType font/woff2 woff2
+    AddType application/font-woff woff
+    AddType application/font-woff2 woff2
+    
+    # Otros tipos
+    AddType application/json json
+    AddType application/javascript js
+    AddType text/css css
+</IfModule>
+
+# Prevenir acceso a archivos sensibles
+<FilesMatch "\.(htaccess|htpasswd|ini|log|sh|inc|bak)$">
+    Order Allow,Deny
+    Deny from all
+</FilesMatch>
+
+# Configurar página de error personalizada
+ErrorDocument 404 /index.html
+
+# Configurar charset UTF-8
+AddDefaultCharset UTF-8
+
+# Configurar límites de subida (si es necesario)
+<IfModule mod_php.c>
+    php_value upload_max_filesize 10M
+    php_value post_max_size 10M
+    php_value max_execution_time 300
+    php_value max_input_vars 3000
+</IfModule>

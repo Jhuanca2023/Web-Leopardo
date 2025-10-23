@@ -1,0 +1,141 @@
+{% extends "layouts/main.html" %}
+
+{% block title %}Productos - Leopardo E-commerce{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-12">
+            <h2 class="mb-4">
+                <i class="fas fa-boxes me-2"></i>
+                Nuestros Productos
+            </h2>
+        </div>
+    </div>
+    
+    <!-- Filtros -->
+    <div id="filters-container"></div>
+    
+    <!-- Productos -->
+    <div class="row" id="products-container">
+        <!-- Se llena dinámicamente -->
+    </div>
+    
+    <!-- Paginación -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div id="pagination-container"></div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+$(document).ready(function() {
+    let currentPage = 1;
+    let currentFilters = {};
+    
+    // Inicializar filtros
+    FilterComponent.create($('#filters-container'), {
+        showCategoryFilter: true,
+        showPriceFilter: true,
+        showSortOptions: true,
+        showSearch: true
+    });
+    
+    // Cargar productos iniciales
+    loadProducts();
+    
+    // Event listener para cambios de filtros
+    $(document).on('filters:changed', function(event, filters) {
+        currentFilters = filters;
+        currentPage = 1;
+        loadProducts();
+    });
+    
+    // Función para cargar productos
+    function loadProducts() {
+        Utils.showLoading('Cargando productos...');
+        
+        const params = {
+            page: currentPage,
+            ...currentFilters
+        };
+        
+        API.get('/productos', params)
+            .done(function(response) {
+                renderProducts(response.data || response);
+                updatePagination(response.pagination);
+            })
+            .fail(function() {
+                $('#products-container').html(`
+                    <div class="col-12 text-center">
+                        <div class="empty-state">
+                            <i class="fas fa-exclamation-triangle fa-3x text-warning mb-3"></i>
+                            <h3>Error al cargar productos</h3>
+                            <p>Por favor, intenta nuevamente más tarde.</p>
+                            <button class="btn btn-primary" onclick="loadProducts()">
+                                <i class="fas fa-refresh me-2"></i>
+                                Reintentar
+                            </button>
+                        </div>
+                    </div>
+                `);
+            })
+            .always(function() {
+                Utils.hideLoading();
+            });
+    }
+    
+    // Función para renderizar productos
+    function renderProducts(products) {
+        const container = $('#products-container');
+        container.empty();
+        
+        if (products.length === 0) {
+            container.html(`
+                <div class="col-12 text-center">
+                    <div class="empty-state">
+                        <i class="fas fa-search fa-3x text-muted mb-3"></i>
+                        <h3>No se encontraron productos</h3>
+                        <p>Intenta ajustar los filtros de búsqueda.</p>
+                    </div>
+                </div>
+            `);
+            return;
+        }
+        
+        products.forEach(product => {
+            const productCard = ProductCard.create(product, {
+                showAddButton: true,
+                showQuickView: true,
+                showWishlist: true
+            });
+            
+            container.append(productCard);
+        });
+    }
+    
+    // Función para actualizar paginación
+    function updatePagination(pagination) {
+        if (!pagination) return;
+        
+        PaginationComponent.create(
+            $('#pagination-container'),
+            pagination.current_page,
+            pagination.total_pages,
+            {
+                onPageChange: function(page) {
+                    currentPage = page;
+                    loadProducts();
+                }
+            }
+        );
+    }
+    
+    // Hacer función global para el botón de reintentar
+    window.loadProducts = loadProducts;
+});
+</script>
+{% endblock %}

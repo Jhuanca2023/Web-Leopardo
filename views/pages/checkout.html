@@ -1,0 +1,702 @@
+{% extends "layouts/main.html" %}
+
+{% block title %}Finalizar Compra - Leopardo E-commerce{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-12">
+            <h2 class="mb-4">
+                <i class="fas fa-credit-card me-2"></i>
+                Finalizar Compra
+            </h2>
+        </div>
+    </div>
+    
+    <form id="checkout-form">
+        <div class="row">
+            <!-- Información de Envío -->
+            <div class="col-lg-8">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-shipping-fast me-2"></i>
+                            Información de Envío
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="shipping-name" class="form-label">Nombre Completo *</label>
+                                    <input type="text" 
+                                           class="form-control" 
+                                           id="shipping-name" 
+                                           name="shipping_name" 
+                                           required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="shipping-phone" class="form-label">Teléfono *</label>
+                                    <input type="tel" 
+                                           class="form-control" 
+                                           id="shipping-phone" 
+                                           name="shipping_phone" 
+                                           required>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="shipping-address" class="form-label">Dirección de Envío *</label>
+                            <textarea class="form-control" 
+                                      id="shipping-address" 
+                                      name="shipping_address" 
+                                      rows="3" 
+                                      required></textarea>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label for="shipping-city" class="form-label">Ciudad *</label>
+                                    <input type="text" 
+                                           class="form-control" 
+                                           id="shipping-city" 
+                                           name="shipping_city" 
+                                           required>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label for="shipping-state" class="form-label">Departamento *</label>
+                                    <select class="form-select" 
+                                            id="shipping-state" 
+                                            name="shipping_state" 
+                                            required>
+                                        <option value="">Seleccionar...</option>
+                                        <option value="antioquia">Antioquia</option>
+                                        <option value="bogota">Bogotá D.C.</option>
+                                        <option value="valle">Valle del Cauca</option>
+                                        <option value="atlantico">Atlántico</option>
+                                        <option value="santander">Santander</option>
+                                        <option value="bolivar">Bolívar</option>
+                                        <option value="cundinamarca">Cundinamarca</option>
+                                        <option value="cordoba">Córdoba</option>
+                                        <option value="nariño">Nariño</option>
+                                        <option value="cesar">Cesar</option>
+                                        <option value="tolima">Tolima</option>
+                                        <option value="huila">Huila</option>
+                                        <option value="cauca">Cauca</option>
+                                        <option value="magdalena">Magdalena</option>
+                                        <option value="meta">Meta</option>
+                                        <option value="caldas">Caldas</option>
+                                        <option value="quindio">Quindío</option>
+                                        <option value="risaralda">Risaralda</option>
+                                        <option value="norte_santander">Norte de Santander</option>
+                                        <option value="boyaca">Boyacá</option>
+                                        <option value="caqueta">Caquetá</option>
+                                        <option value="putumayo">Putumayo</option>
+                                        <option value="choco">Chocó</option>
+                                        <option value="guajira">La Guajira</option>
+                                        <option value="amazonas">Amazonas</option>
+                                        <option value="vaupes">Vaupés</option>
+                                        <option value="vichada">Vichada</option>
+                                        <option value="guainia">Guainía</option>
+                                        <option value="guaviare">Guaviare</option>
+                                        <option value="arauca">Arauca</option>
+                                        <option value="casanare">Casanare</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label for="shipping-zip" class="form-label">Código Postal</label>
+                                    <input type="text" 
+                                           class="form-control" 
+                                           id="shipping-zip" 
+                                           name="shipping_zip">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="shipping-notes" class="form-label">Notas de Envío</label>
+                            <textarea class="form-control" 
+                                      id="shipping-notes" 
+                                      name="shipping_notes" 
+                                      rows="2" 
+                                      placeholder="Instrucciones especiales para la entrega..."></textarea>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Método de Pago -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-credit-card me-2"></i>
+                            Método de Pago
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Tipo de Pago *</label>
+                                    <div class="form-check">
+                                        <input class="form-check-input" 
+                                               type="radio" 
+                                               name="payment_method" 
+                                               id="payment-card" 
+                                               value="card" 
+                                               checked>
+                                        <label class="form-check-label" for="payment-card">
+                                            <i class="fas fa-credit-card me-2"></i>
+                                            Tarjeta de Crédito/Débito
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" 
+                                               type="radio" 
+                                               name="payment_method" 
+                                               id="payment-transfer" 
+                                               value="transfer">
+                                        <label class="form-check-label" for="payment-transfer">
+                                            <i class="fas fa-university me-2"></i>
+                                            Transferencia Bancaria
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" 
+                                               type="radio" 
+                                               name="payment_method" 
+                                               id="payment-cash" 
+                                               value="cash">
+                                        <label class="form-check-label" for="payment-cash">
+                                            <i class="fas fa-money-bill-wave me-2"></i>
+                                            Pago Contra Entrega
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Información de Facturación</label>
+                                    <div class="form-check">
+                                        <input class="form-check-input" 
+                                               type="checkbox" 
+                                               id="same-billing" 
+                                               checked>
+                                        <label class="form-check-label" for="same-billing">
+                                            Usar la misma información de envío
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Información de Tarjeta -->
+                        <div id="card-info" class="payment-method-info">
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <div class="mb-3">
+                                        <label for="card-number" class="form-label">Número de Tarjeta *</label>
+                                        <input type="text" 
+                                               class="form-control" 
+                                               id="card-number" 
+                                               name="card_number" 
+                                               placeholder="1234 5678 9012 3456" 
+                                               maxlength="19">
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="mb-3">
+                                        <label for="card-cvv" class="form-label">CVV *</label>
+                                        <input type="text" 
+                                               class="form-control" 
+                                               id="card-cvv" 
+                                               name="card_cvv" 
+                                               placeholder="123" 
+                                               maxlength="4">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="card-expiry" class="form-label">Fecha de Vencimiento *</label>
+                                        <input type="text" 
+                                               class="form-control" 
+                                               id="card-expiry" 
+                                               name="card_expiry" 
+                                               placeholder="MM/AA" 
+                                               maxlength="5">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="card-name" class="form-label">Nombre en la Tarjeta *</label>
+                                        <input type="text" 
+                                               class="form-control" 
+                                               id="card-name" 
+                                               name="card_name" 
+                                               placeholder="Como aparece en la tarjeta">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Información de Transferencia -->
+                        <div id="transfer-info" class="payment-method-info" style="display: none;">
+                            <div class="alert alert-info">
+                                <h6><i class="fas fa-info-circle me-2"></i>Instrucciones para Transferencia</h6>
+                                <p class="mb-2">Realiza la transferencia a la siguiente cuenta:</p>
+                                <ul class="mb-0">
+                                    <li><strong>Banco:</strong> Banco de Bogotá</li>
+                                    <li><strong>Cuenta:</strong> 1234567890</li>
+                                    <li><strong>Titular:</strong> Leopardo E-commerce S.A.S.</li>
+                                    <li><strong>Referencia:</strong> <span id="transfer-reference">PED-001</span></li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <!-- Información de Pago Contra Entrega -->
+                        <div id="cash-info" class="payment-method-info" style="display: none;">
+                            <div class="alert alert-warning">
+                                <h6><i class="fas fa-exclamation-triangle me-2"></i>Pago Contra Entrega</h6>
+                                <p class="mb-0">El pago se realizará al momento de recibir el producto. 
+                                Asegúrate de tener el monto exacto disponible.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Resumen del Pedido -->
+            <div class="col-lg-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-receipt me-2"></i>
+                            Resumen del Pedido
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="order-summary">
+                            <!-- Se llena dinámicamente -->
+                        </div>
+                        
+                        <hr>
+                        
+                        <!-- Código de Descuento -->
+                        <div class="mb-3">
+                            <label for="checkout-discount" class="form-label">Código de Descuento</label>
+                            <div class="input-group">
+                                <input type="text" 
+                                       class="form-control" 
+                                       id="checkout-discount" 
+                                       placeholder="Código">
+                                <button class="btn btn-outline-primary" type="button" id="apply-checkout-discount">
+                                    Aplicar
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <hr>
+                        
+                        <!-- Desglose de Costos -->
+                        <div class="cost-breakdown">
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Subtotal:</span>
+                                <span id="subtotal">$0</span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Envío:</span>
+                                <span id="shipping-cost">$0</span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2" id="discount-row" style="display: none;">
+                                <span>Descuento:</span>
+                                <span id="discount-amount" class="text-success">-$0</span>
+                            </div>
+                            <hr>
+                            <div class="d-flex justify-content-between">
+                                <strong>Total:</strong>
+                                <strong class="text-primary" id="total-amount">$0</strong>
+                            </div>
+                        </div>
+                        
+                        <hr>
+                        
+                        <!-- Términos y Condiciones -->
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" 
+                                       type="checkbox" 
+                                       id="accept-terms" 
+                                       required>
+                                <label class="form-check-label" for="accept-terms">
+                                    Acepto los <a href="/terminos" target="_blank">términos y condiciones</a> 
+                                    y la <a href="/privacidad" target="_blank">política de privacidad</a> *
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <!-- Botón de Finalizar Compra -->
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary btn-lg" id="complete-order">
+                                <i class="fas fa-lock me-2"></i>
+                                Finalizar Compra
+                            </button>
+                        </div>
+                        
+                        <!-- Información de Seguridad -->
+                        <div class="mt-3 text-center">
+                            <small class="text-muted">
+                                <i class="fas fa-shield-alt me-1"></i>
+                                Compra 100% segura y protegida
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.payment-method-info {
+    margin-top: 1rem;
+    padding: 1rem;
+    border: 1px solid #dee2e6;
+    border-radius: 0.375rem;
+    background-color: #f8f9fa;
+}
+
+.cost-breakdown {
+    font-size: 0.9rem;
+}
+
+.order-item {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid #f8f9fa;
+}
+
+.order-item:last-child {
+    border-bottom: none;
+}
+
+.order-item img {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 4px;
+    margin-right: 0.75rem;
+}
+
+.order-item-info {
+    flex: 1;
+}
+
+.order-item-title {
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+}
+
+.order-item-details {
+    font-size: 0.8rem;
+    color: #6c757d;
+}
+
+.order-item-price {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #0d6efd;
+}
+
+#card-number, #card-expiry {
+    font-family: 'Courier New', monospace;
+}
+
+.form-check-input:checked + .form-check-label {
+    color: #0d6efd;
+    font-weight: 500;
+}
+
+@media (max-width: 768px) {
+    .payment-method-info {
+        margin-top: 0.5rem;
+        padding: 0.75rem;
+    }
+}
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+$(document).ready(function() {
+    // Verificar autenticación
+    if (!AuthManager.requireAuth()) {
+        return;
+    }
+    
+    // Cargar datos del usuario
+    loadUserData();
+    
+    // Cargar resumen del pedido
+    loadOrderSummary();
+    
+    // Event listeners
+    setupCheckoutEventListeners();
+    
+    // Generar referencia de transferencia
+    generateTransferReference();
+});
+
+function loadUserData() {
+    if (AppState.user) {
+        $('#shipping-name').val(AppState.user.name || '');
+        $('#shipping-phone').val(AppState.user.telefono || '');
+        $('#shipping-address').val(AppState.user.direccion || '');
+    }
+}
+
+function loadOrderSummary() {
+    const container = $('#order-summary');
+    container.empty();
+    
+    if (AppState.cart.items.length === 0) {
+        container.html(`
+            <div class="text-center text-muted">
+                <i class="fas fa-shopping-cart fa-2x mb-2"></i>
+                <p>No hay productos en tu carrito</p>
+            </div>
+        `);
+        return;
+    }
+    
+    AppState.cart.items.forEach(item => {
+        const orderItem = $(`
+            <div class="order-item">
+                <img src="${item.producto.imagen_principal || '/assets/images/producto-default.jpg'}" 
+                     alt="${Utils.sanitizeHtml(item.producto.nombre)}">
+                <div class="order-item-info">
+                    <div class="order-item-title">${Utils.sanitizeHtml(item.producto.nombre)}</div>
+                    <div class="order-item-details">
+                        Cantidad: ${item.cantidad} | 
+                        ${Utils.formatPrice(item.producto.precio)} c/u
+                    </div>
+                </div>
+                <div class="order-item-price">${Utils.formatPrice(item.subtotal)}</div>
+            </div>
+        `);
+        
+        container.append(orderItem);
+    });
+    
+    updateCostBreakdown();
+}
+
+function updateCostBreakdown() {
+    const subtotal = AppState.cart.total;
+    const shippingCost = subtotal > 0 && subtotal < 100000 ? 15000 : 0;
+    const discount = 0; // Se implementaría la lógica de descuentos
+    const total = subtotal + shippingCost - discount;
+    
+    $('#subtotal').text(Utils.formatPrice(subtotal));
+    $('#shipping-cost').text(Utils.formatPrice(shippingCost));
+    $('#total-amount').text(Utils.formatPrice(total));
+    
+    if (discount > 0) {
+        $('#discount-row').show();
+        $('#discount-amount').text('-' + Utils.formatPrice(discount));
+    } else {
+        $('#discount-row').hide();
+    }
+}
+
+function setupCheckoutEventListeners() {
+    // Cambio de método de pago
+    $('input[name="payment_method"]').on('change', function() {
+        const method = $(this).val();
+        
+        $('.payment-method-info').hide();
+        $(`#${method}-info`).show();
+    });
+    
+    // Formateo de número de tarjeta
+    $('#card-number').on('input', function() {
+        let value = $(this).val().replace(/\D/g, '');
+        value = value.replace(/(\d{4})(?=\d)/g, '$1 ');
+        $(this).val(value);
+    });
+    
+    // Formateo de fecha de vencimiento
+    $('#card-expiry').on('input', function() {
+        let value = $(this).val().replace(/\D/g, '');
+        if (value.length >= 2) {
+            value = value.substring(0, 2) + '/' + value.substring(2, 4);
+        }
+        $(this).val(value);
+    });
+    
+    // Formateo de CVV
+    $('#card-cvv').on('input', function() {
+        $(this).val($(this).val().replace(/\D/g, ''));
+    });
+    
+    // Formateo de teléfono
+    $('#shipping-phone').on('input', function() {
+        let value = $(this).val().replace(/\D/g, '');
+        if (value.length > 0) {
+            if (value.length <= 3) {
+                value = `+57 ${value}`;
+            } else if (value.length <= 6) {
+                value = `+57 ${value.slice(3)}`;
+            } else if (value.length <= 9) {
+                value = `+57 ${value.slice(3, 6)} ${value.slice(6)}`;
+            } else {
+                value = `+57 ${value.slice(3, 6)} ${value.slice(6, 9)} ${value.slice(9, 12)}`;
+            }
+        }
+        $(this).val(value);
+    });
+    
+    // Aplicar descuento
+    $('#apply-checkout-discount').on('click', function() {
+        const code = $('#checkout-discount').val().trim();
+        
+        if (!code) {
+            Utils.showNotification('Por favor, ingresa un código de descuento', 'error');
+            return;
+        }
+        
+        // Aquí se implementaría la lógica de descuentos
+        Utils.showNotification('Código de descuento aplicado', 'success');
+    });
+    
+    // Envío del formulario
+    $('#checkout-form').on('submit', function(e) {
+        e.preventDefault();
+        
+        if (!validateCheckoutForm()) {
+            return;
+        }
+        
+        processOrder();
+    });
+}
+
+function validateCheckoutForm() {
+    // Validar campos requeridos
+    const requiredFields = [
+        'shipping-name', 'shipping-phone', 'shipping-address', 
+        'shipping-city', 'shipping-state'
+    ];
+    
+    let isValid = true;
+    
+    requiredFields.forEach(fieldId => {
+        const field = $(`#${fieldId}`);
+        if (!field.val().trim()) {
+            field.addClass('is-invalid');
+            isValid = false;
+        } else {
+            field.removeClass('is-invalid');
+        }
+    });
+    
+    // Validar método de pago
+    const paymentMethod = $('input[name="payment_method"]:checked').val();
+    
+    if (paymentMethod === 'card') {
+        const cardFields = ['card-number', 'card-cvv', 'card-expiry', 'card-name'];
+        cardFields.forEach(fieldId => {
+            const field = $(`#${fieldId}`);
+            if (!field.val().trim()) {
+                field.addClass('is-invalid');
+                isValid = false;
+            } else {
+                field.removeClass('is-invalid');
+            }
+        });
+    }
+    
+    // Validar términos y condiciones
+    if (!$('#accept-terms').is(':checked')) {
+        Utils.showNotification('Debes aceptar los términos y condiciones', 'error');
+        isValid = false;
+    }
+    
+    if (!isValid) {
+        Utils.showNotification('Por favor, completa todos los campos requeridos', 'error');
+    }
+    
+    return isValid;
+}
+
+function processOrder() {
+    Utils.showLoading('Procesando tu pedido...');
+    
+    const formData = {
+        direccion_envio: $('#shipping-address').val(),
+        telefono_contacto: $('#shipping-phone').val(),
+        ciudad: $('#shipping-city').val(),
+        departamento: $('#shipping-state').val(),
+        codigo_postal: $('#shipping-zip').val(),
+        notas_envio: $('#shipping-notes').val(),
+        metodo_pago: $('input[name="payment_method"]:checked').val(),
+        // Información de tarjeta si aplica
+        ...(getCardInfo())
+    };
+    
+    API.post('/pedidos', formData)
+        .done(function(response) {
+            Utils.hideLoading();
+            Utils.showNotification('¡Pedido realizado exitosamente!', 'success');
+            
+            // Limpiar carrito
+            CartManager.clear();
+            
+            // Redirigir a confirmación
+            window.location.href = `/pedidos/${response.pedido.id}`;
+        })
+        .fail(function(xhr) {
+            Utils.hideLoading();
+            const error = xhr.responseJSON ? xhr.responseJSON.error : 'Error al procesar el pedido';
+            Utils.showNotification(error, 'error');
+        });
+}
+
+function getCardInfo() {
+    const paymentMethod = $('input[name="payment_method"]:checked').val();
+    
+    if (paymentMethod === 'card') {
+        return {
+            card_number: $('#card-number').val(),
+            card_cvv: $('#card-cvv').val(),
+            card_expiry: $('#card-expiry').val(),
+            card_name: $('#card-name').val()
+        };
+    }
+    
+    return {};
+}
+
+function generateTransferReference() {
+    const reference = 'PED-' + Date.now().toString().slice(-6);
+    $('#transfer-reference').text(reference);
+}
+
+// Limpiar validaciones al escribir
+$('#checkout-form input, #checkout-form textarea, #checkout-form select').on('input change', function() {
+    $(this).removeClass('is-invalid');
+});
+</script>
+{% endblock %}
