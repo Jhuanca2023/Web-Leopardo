@@ -231,6 +231,47 @@ $app->get('/health', function($params) {
 });
 
 // =====================================================
+// RUTA DE LOGGING DE ERRORES
+// =====================================================
+
+$app->post('/errors', function($params) {
+    try {
+        $input = json_decode(file_get_contents("php://input"), true);
+        
+        if (!$input || !isset($input['error'])) {
+            return [
+                'success' => false,
+                'message' => 'Datos de error no válidos'
+            ];
+        }
+        
+        // Log del error en el archivo de log del servidor
+        $logMessage = sprintf(
+            "[%s] Frontend Error - Type: %s, Message: %s, URL: %s, User: %s\n",
+            $input['timestamp'] ?? date('Y-m-d H:i:s'),
+            $input['error']['type'] ?? 'unknown',
+            $input['error']['message'] ?? 'No message',
+            $input['url'] ?? 'Unknown URL',
+            $input['userId'] ?? 'Anonymous'
+        );
+        
+        error_log($logMessage, 3, __DIR__ . '/../error_log.txt');
+        
+        return [
+            'success' => true,
+            'message' => 'Error logged successfully'
+        ];
+        
+    } catch (Exception $e) {
+        error_log("Error logging frontend error: " . $e->getMessage());
+        return [
+            'success' => false,
+            'message' => 'Error al procesar el log'
+        ];
+    }
+});
+
+// =====================================================
 // MANEJAR REQUEST
 // =====================================================
 
