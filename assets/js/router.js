@@ -2566,10 +2566,15 @@ class Router {
         const isLineaEconomica = product.categoria_nombre === "Línea Económica";
 
         function actualizarBoton() {
-            const currentVal = parseInt(quantityInput.value) || 0;
-            if (isLineaEconomica) {
-                botonCarrito.disabled = currentVal < 12;
-            }
+            const cantidad = parseInt(quantityInput.value) || 0;
+            if (!isLineaEconomica) return;
+
+            const cumpleMinimo = cantidad >= 12;
+            botonCarrito.disabled = !cumpleMinimo;
+            botonCarrito.classList.toggle('disabled', !cumpleMinimo);
+            botonCarrito.innerHTML = cumpleMinimo
+                ? '<i class="fas fa-cart-plus me-2"></i>Agregar al carrito'
+                : '<i class="fas fa-times me-2"></i>Compra mínima: 12 unidades';
         }
 
         decreaseBtn.addEventListener('click', function() {
