@@ -194,7 +194,9 @@ class ErrorHandler {
         try {
             // Solo enviar errores críticos al servidor para evitar spam
             if (this.shouldLogToServer(errorInfo)) {
-                await fetch('https://leopardo.tecnovedadesweb.site/api/errors', {
+                // Usar la configuración de API del proyecto
+                const apiUrl = window.APP_CONFIG?.apiBaseUrl || window.location.origin + '/api';
+                await fetch(apiUrl + '/errors', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
