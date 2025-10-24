@@ -2560,37 +2560,36 @@ class Router {
             });
         });
 
-        // Control de cantidad
         const decreaseBtn = document.getElementById('decrease-qty');
         const increaseBtn = document.getElementById('increase-qty');
+        const botonCarrito = document.querySelector('.btn-add-to-cart');
+        const isLineaEconomica = product.categoria_nombre === "Línea Económica";
+
+        function actualizarBoton() {
+            const currentVal = parseInt(quantityInput.value) || 0;
+            if (isLineaEconomica) {
+                botonCarrito.disabled = currentVal < 12;
+            }
+        }
 
         decreaseBtn.addEventListener('click', function() {
-            const currentVal = parseInt(quantityInput.value);
-            if (currentVal > 1) {
-                quantityInput.value = currentVal - 1;
-            }
+            let val = parseInt(quantityInput.value) || 1;
+            if (val > 1) val--;
+            quantityInput.value = val;
+            actualizarBoton();
         });
 
         increaseBtn.addEventListener('click', function() {
-            const currentVal = parseInt(quantityInput.value);
-            const maxStock = parseInt(quantityInput.getAttribute('max'));
-            if (currentVal < maxStock) {
-                quantityInput.value = currentVal + 1;
-            }
+            let val = parseInt(quantityInput.value) || 1;
+            const maxStock = parseInt(quantityInput.getAttribute('max')) || 0;
+            if (val < maxStock) val++;
+            quantityInput.value = val;
+            actualizarBoton();
         });
 
-        // Validar cantidad en input directo
-        quantityInput.addEventListener('input', function() {
-            const value = parseInt(this.value);
-            const max = parseInt(this.getAttribute('max'));
-            const min = parseInt(this.getAttribute('min')) || 1;
-            
-            if (isNaN(value) || value < min) {
-                this.value = min;
-            } else if (value > max) {
-                this.value = max;
-            }
-        });
+        quantityInput.addEventListener('input', actualizarBoton);
+        actualizarBoton();
+
 
         // Evento para agregar al carrito
         addToCartBtn.addEventListener('click', function() {
