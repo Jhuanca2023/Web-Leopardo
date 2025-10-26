@@ -2052,7 +2052,7 @@ class Router {
         
         if (config.showDiscount && porcentajeDescuento > 0) {
             discountBadge = `
-                <div class="position-absolute top-0 end-0 m-2">
+                <div class="position-absolute top-0 end-0 m-2" style="z-index: 3;">
                     <span class="badge bg-danger">-${porcentajeDescuento}%</span>
                 </div>
             `;
@@ -2295,7 +2295,7 @@ class Router {
                     if (hasTallasNormales) {
                         tallasOptions += `
                             <div class="tallas-section mb-3">
-                                <h6 class="text-muted mb-2">Tallas Normales</h6>
+                                <h6 class="mb-2" style="color: var(--text-secondary);">Tallas Normales</h6>
                                 <div class="tallas-group">
                                     ${tallasNormales}
                                 </div>
@@ -2332,7 +2332,7 @@ class Router {
                         </div>
                     `;
                     badgeDescuento = `
-                        <div class="position-absolute top-0 end-0 m-3">
+                        <div class="position-absolute top-0 end-0 m-2" style="z-index: 3;">
                             <span class="badge bg-danger discount-badge">-${descuento}%</span>
                         </div>
                     `;
@@ -2451,7 +2451,7 @@ class Router {
                 }
 
                 container1.innerHTML = `
-                <div class="product-features-container">
+                <div class="product-features-container" id="product-features-container-custom">
                     <div class="features-content">
                         <h2 class="features-title">
                             <i class="fas fa-cogs me-2"></i>
@@ -2459,7 +2459,7 @@ class Router {
                         </h2>
                         
                         <div class="features-description">
-                            <p>${Utils.sanitizeHtml(product.descripcion || '')}</p>
+                            <p style="margin: 0;">${Utils.sanitizeHtml(product.descripcion || '')}</p>
                         </div>
 
                         <div class="specifications-grid">
@@ -2560,37 +2560,41 @@ class Router {
             });
         });
 
-        // Control de cantidad
         const decreaseBtn = document.getElementById('decrease-qty');
         const increaseBtn = document.getElementById('increase-qty');
+        const botonCarrito = document.querySelector('.btn-add-to-cart');
+        const isLineaEconomica = product.categoria_nombre === "Línea Económica";
+
+        function actualizarBoton() {
+            const cantidad = parseInt(quantityInput.value) || 0;
+            if (!isLineaEconomica) return;
+
+            const cumpleMinimo = cantidad >= 12;
+            botonCarrito.disabled = !cumpleMinimo;
+            botonCarrito.classList.toggle('disabled', !cumpleMinimo);
+            botonCarrito.innerHTML = cumpleMinimo
+                ? '<i class="fas fa-cart-plus me-2"></i>Agregar al carrito'
+                : '<i class="fas fa-times me-2"></i>Compra mínima: 12 unidades';
+        }
 
         decreaseBtn.addEventListener('click', function() {
-            const currentVal = parseInt(quantityInput.value);
-            if (currentVal > 1) {
-                quantityInput.value = currentVal - 1;
-            }
+            let val = parseInt(quantityInput.value) || 1;
+            if (val > 1) val--;
+            quantityInput.value = val;
+            actualizarBoton();
         });
 
         increaseBtn.addEventListener('click', function() {
-            const currentVal = parseInt(quantityInput.value);
-            const maxStock = parseInt(quantityInput.getAttribute('max'));
-            if (currentVal < maxStock) {
-                quantityInput.value = currentVal + 1;
-            }
+            let val = parseInt(quantityInput.value) || 1;
+            const maxStock = parseInt(quantityInput.getAttribute('max')) || 0;
+            if (val < maxStock) val++;
+            quantityInput.value = val;
+            actualizarBoton();
         });
 
-        // Validar cantidad en input directo
-        quantityInput.addEventListener('input', function() {
-            const value = parseInt(this.value);
-            const max = parseInt(this.getAttribute('max'));
-            const min = parseInt(this.getAttribute('min')) || 1;
-            
-            if (isNaN(value) || value < min) {
-                this.value = min;
-            } else if (value > max) {
-                this.value = max;
-            }
-        });
+        quantityInput.addEventListener('input', actualizarBoton);
+        actualizarBoton();
+
 
         // Evento para agregar al carrito
         addToCartBtn.addEventListener('click', function() {
