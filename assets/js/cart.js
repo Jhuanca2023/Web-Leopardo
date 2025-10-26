@@ -297,7 +297,9 @@ const CartManager = {
      * Actualizar UI del carrito
      */
     updateUI: function() {
-        // Actualizar badge del carrito
+        console.log('🛒 Actualizando UI del carrito, count:', AppState.cart.count);
+        
+        // Actualizar badge del carrito principal
         $('#cart-badge').text(AppState.cart.count);
         
         if (AppState.cart.count > 0) {
@@ -305,6 +307,17 @@ const CartManager = {
         } else {
             $('#cart-badge').hide();
         }
+        
+        // Actualizar badge del carrito móvil
+        $('#mobile-cart-badge').text(AppState.cart.count);
+        
+        if (AppState.cart.count > 0) {
+            $('#mobile-cart-badge').show();
+        } else {
+            $('#mobile-cart-badge').hide();
+        }
+        
+        console.log('📱 Badge móvil actualizado a:', AppState.cart.count);
         
         // Actualizar página del carrito si existe
         if ($('#cart-page').length) {
@@ -315,6 +328,10 @@ const CartManager = {
         if ($('#cart-summary').length) {
             CartManager.renderCartSummary();
         }
+        
+        // Disparar evento personalizado para sincronización
+        $(document).trigger('cartUpdated');
+        console.log('📡 Evento cartUpdated disparado');
     },
 
     /**
@@ -585,6 +602,13 @@ const CartManager = {
 $(document).ready(function() {
     // Cargar carrito al inicializar
     CartManager.load();
+    
+    // Sincronizar badge móvil después de cargar
+    setTimeout(() => {
+        if (window.mobileMenu && window.mobileMenu.forceSyncCartBadge) {
+            window.mobileMenu.forceSyncCartBadge();
+        }
+    }, 1000);
     
     // Event listeners para botones de cantidad
     $(document).on('click', '.quantity-btn', function() {
