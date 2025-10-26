@@ -792,7 +792,6 @@ class Router {
                                             <li>Materiales de primera calidad</li>
                                         </ul>
                                         <p class="lead mb-4">Confianza respaldada por estándares internacionales de seguridad.</p>
-                                        <a href="/productos" class="btn btn-warning btn-lg text-dark fw-bold">Ver certificaciones</a>
                                     </div>
                                         <div class="col-lg-6">
                                             <img src="assets/images/slide4.jpg" class="d-block w-100 carousel-img-mobile-mt" alt="Calidad certificada">
@@ -812,7 +811,7 @@ class Router {
                                             <li>Seguimiento post-venta</li>
                                         </ul>
                                         <p class="lead mb-4">Un equipo experto dedicado a brindarte la mejor experiencia de compra.</p>
-                                        <a href="/contact" class="btn btn-warning btn-lg text-dark fw-bold">Contáctanos</a>
+                                        <a href="/contacto" class="btn btn-warning btn-lg text-dark fw-bold">Contáctanos</a>
                                     </div>
                                         <div class="col-lg-6">
                                             <img src="assets/images/calzados-industrial.jpg" class="d-block w-100 carousel-img-mobile-mt" alt="Atención personalizada">
@@ -2781,7 +2780,7 @@ class Router {
                     const templateParams = {
                         from_name: formData.name,
                         from_email: formData.email,
-                        to_email: window.EmailConfig.destinationEmail || 'jesusjbjonathan@gmail.com',
+                        to_email: window.EmailConfig.destinationEmail || 'josehuanca612@gmail.com',
                         subject: formData.subject,
                         message: formData.message,
                         reply_to: formData.email,
