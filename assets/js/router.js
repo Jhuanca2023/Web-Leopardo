@@ -2052,7 +2052,7 @@ class Router {
         
         if (config.showDiscount && porcentajeDescuento > 0) {
             discountBadge = `
-                <div class="position-absolute top-0 end-0 m-2">
+                <div class="position-absolute top-0 end-0 m-2" style="z-index: 3;">
                     <span class="badge bg-danger">-${porcentajeDescuento}%</span>
                 </div>
             `;
@@ -2295,7 +2295,7 @@ class Router {
                     if (hasTallasNormales) {
                         tallasOptions += `
                             <div class="tallas-section mb-3">
-                                <h6 class="text-muted mb-2">Tallas Normales</h6>
+                                <h6 class="mb-2" style="color: var(--text-secondary);">Tallas Normales</h6>
                                 <div class="tallas-group">
                                     ${tallasNormales}
                                 </div>
@@ -2332,7 +2332,7 @@ class Router {
                         </div>
                     `;
                     badgeDescuento = `
-                        <div class="position-absolute top-0 end-0 m-3">
+                        <div class="position-absolute top-0 end-0 m-2" style="z-index: 3;">
                             <span class="badge bg-danger discount-badge">-${descuento}%</span>
                         </div>
                     `;
@@ -2451,7 +2451,7 @@ class Router {
                 }
 
                 container1.innerHTML = `
-                <div class="product-features-container">
+                <div class="product-features-container" id="product-features-container-custom">
                     <div class="features-content">
                         <h2 class="features-title">
                             <i class="fas fa-cogs me-2"></i>
@@ -2459,7 +2459,7 @@ class Router {
                         </h2>
                         
                         <div class="features-description">
-                            <p>${Utils.sanitizeHtml(product.descripcion || '')}</p>
+                            <p style="margin: 0;">${Utils.sanitizeHtml(product.descripcion || '')}</p>
                         </div>
 
                         <div class="specifications-grid">
