@@ -154,6 +154,13 @@ class MobileMenu {
         const mainCartBadge = document.getElementById('cart-badge');
         if (mainCartBadge && this.mobileCartBadge) {
             this.mobileCartBadge.textContent = mainCartBadge.textContent;
+            
+            // También sincronizar visibilidad
+            if (mainCartBadge.style.display === 'none' || mainCartBadge.textContent === '0') {
+                this.mobileCartBadge.style.display = 'none';
+            } else {
+                this.mobileCartBadge.style.display = 'inline-block';
+            }
         }
     }
 
@@ -184,11 +191,48 @@ class MobileMenu {
         this.syncCartBadge();
         this.updateAuthState();
     }
+    
+    // Función para sincronizar inmediatamente al cargar
+    forceSyncCartBadge() {
+        console.log('🛒 Sincronizando badge móvil del carrito...');
+        
+        // Obtener el estado actual del carrito desde AppState
+        if (window.AppState && window.AppState.cart) {
+            console.log('📊 Estado del carrito:', window.AppState.cart);
+            
+            if (this.mobileCartBadge) {
+                const count = window.AppState.cart.count || 0;
+                this.mobileCartBadge.textContent = count;
+                
+                console.log(`🔢 Actualizando badge móvil a: ${count}`);
+                
+                if (count > 0) {
+                    this.mobileCartBadge.style.display = 'inline-block';
+                    console.log('✅ Badge móvil visible');
+                } else {
+                    this.mobileCartBadge.style.display = 'none';
+                    console.log('❌ Badge móvil oculto');
+                }
+            } else {
+                console.error('❌ No se encontró el elemento mobile-cart-badge');
+            }
+        } else {
+            console.log('⚠️ AppState.cart no disponible, usando fallback');
+            // Fallback: sincronizar con el badge principal
+            this.syncCartBadge();
+        }
+    }
 }
 
 
 document.addEventListener('DOMContentLoaded', () => {
     window.mobileMenu = new MobileMenu();
+    
+    // Sincronizar después de que se cargue el carrito
+    setTimeout(() => {
+        window.mobileMenu?.forceSyncCartBadge();
+    }, 500);
+    
     document.addEventListener('cartUpdated', () => {
         window.mobileMenu?.refresh();
     });
