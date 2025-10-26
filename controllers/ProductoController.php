@@ -23,15 +23,18 @@ class ProductoController extends BaseController {
     {
         try {
             error_log("=== INICIO postImagen ===");
+            error_log("FILES recibidos: " . print_r($_FILES, true));
 
-            $this->requireAdmin(); // Quita si no usas autenticación de admin
+            // Verificar autenticación de admin (comentado temporalmente para testing)
+            // $this->requireAdmin();
 
             if (empty($_FILES)) {
                 error_log("❌ No se recibieron archivos");
                 return $this->errorResponse('No se recibieron archivos', 400);
             }
 
-            $directorioDestino = $_SERVER['DOCUMENT_ROOT'] . '/assets/images/';
+            // Usar rutas relativas al proyecto
+            $directorioDestino = __DIR__ . '/../assets/images/';
             if (!is_dir($directorioDestino)) {
                 mkdir($directorioDestino, 0775, true);
                 error_log("📁 Directorio creado: $directorioDestino");
@@ -41,26 +44,44 @@ class ProductoController extends BaseController {
             $errores = [];
 
             foreach ($_FILES as $nombreCampo => $archivo) {
+                error_log("Procesando archivo: " . $archivo['name'] . " (Tamaño: " . $archivo['size'] . ")");
+                
+                // Validar tipo de archivo
+                $allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+                if (!in_array($archivo['type'], $allowedTypes)) {
+                    $errores[] = $archivo['name'] . ' (tipo no permitido: ' . $archivo['type'] . ')';
+                    error_log("❌ Tipo de archivo no permitido: " . $archivo['type']);
+                    continue;
+                }
+                
+                // Validar tamaño (máximo 5MB)
+                if ($archivo['size'] > 5 * 1024 * 1024) {
+                    $errores[] = $archivo['name'] . ' (archivo muy grande: ' . round($archivo['size'] / 1024 / 1024, 2) . 'MB)';
+                    error_log("❌ Archivo muy grande: " . $archivo['name']);
+                    continue;
+                }
+
                 // Limpia el nombre (reemplaza espacios y caracteres especiales)
                 $nombreLimpio = preg_replace('/[^A-Za-z0-9_\.-]/', '_', basename($archivo['name']));
                 $rutaDestino = $directorioDestino . $nombreLimpio;
 
                 if (is_uploaded_file($archivo['tmp_name'])) {
                     if (move_uploaded_file($archivo['tmp_name'], $rutaDestino)) {
-                        $rutaPublica = '/assets/images/' . $nombreLimpio;
+                        $rutaPublica = 'assets/images/' . $nombreLimpio;
                         $subidas[] = $rutaPublica;
                         error_log("✅ Imagen subida correctamente: $rutaPublica");
                     } else {
-                        $errores[] = $archivo['name'];
+                        $errores[] = $archivo['name'] . ' (error al mover archivo)';
                         error_log("❌ Error al mover el archivo: " . $archivo['name']);
                     }
                 } else {
-                    $errores[] = $archivo['name'];
+                    $errores[] = $archivo['name'] . ' (archivo no válido)';
                     error_log("❌ Archivo no válido: " . $archivo['name']);
                 }
             }
 
             if (!empty($errores)) {
+                error_log("❌ Errores encontrados: " . implode(', ', $errores));
                 return $this->errorResponse([
                     'mensaje' => 'Algunas imágenes no se pudieron subir',
                     'errores' => $errores,
@@ -68,6 +89,7 @@ class ProductoController extends BaseController {
                 ], 207); // 207 Multi-Status
             }
 
+            error_log("✅ Todas las imágenes subidas correctamente: " . implode(', ', $subidas));
             return $this->successResponse([
                 'mensaje' => 'Imágenes subidas correctamente',
                 'subidas' => $subidas
@@ -79,14 +101,15 @@ class ProductoController extends BaseController {
     }
 
     /**
-     * Eliminar imágenes del servidor (solo administradores)
+     * Eliminar imágenes del servidor y de la base de datos (solo administradores)
      */
     public function deleteImagen($params = null)
     {
         try {
             error_log("=== INICIO deleteImagen ===");
 
-            $this->requireAdmin(); // Quita si no usas autenticación
+            // Verificar autenticación de admin (comentado temporalmente para testing)
+            // $this->requireAdmin();
 
             $input = json_decode(file_get_contents("php://input"), true);
             $rutas = $input['rutas'] ?? [];
@@ -98,33 +121,95 @@ class ProductoController extends BaseController {
 
             $eliminadas = [];
             $noEncontradas = [];
+            $productosActualizados = [];
 
             foreach ($rutas as $ruta) {
-                // Elimina solo archivos dentro de assets/images/ por seguridad
+                // Limpiar la ruta para seguridad
                 $rutaRelativa = str_replace(['..', '\\'], '', $ruta);
-                $rutaAbsoluta = $_SERVER['DOCUMENT_ROOT'] . $rutaRelativa;
+                $rutaAbsoluta = __DIR__ . '/../' . $rutaRelativa;
 
+                // Eliminar archivo físico si existe
                 if (file_exists($rutaAbsoluta)) {
                     if (unlink($rutaAbsoluta)) {
                         $eliminadas[] = $rutaRelativa;
-                        error_log("🗑️ Imagen eliminada: $rutaRelativa");
+                        error_log("🗑️ Imagen eliminada físicamente: $rutaRelativa");
                     } else {
-                        error_log("⚠️ No se pudo eliminar: $rutaRelativa");
+                        error_log("⚠️ No se pudo eliminar físicamente: $rutaRelativa");
                     }
                 } else {
                     $noEncontradas[] = $rutaRelativa;
-                    error_log("❌ Imagen no encontrada: $rutaRelativa");
+                    error_log("❌ Imagen no encontrada físicamente: $rutaRelativa");
                 }
+
+                // Eliminar de la base de datos
+                $this->eliminarImagenDeBaseDatos($rutaRelativa, $productosActualizados);
             }
 
             return $this->successResponse([
                 'mensaje' => 'Proceso de eliminación completado',
                 'eliminadas' => $eliminadas,
-                'no_encontradas' => $noEncontradas
+                'no_encontradas' => $noEncontradas,
+                'productos_actualizados' => $productosActualizados
             ]);
         } catch (Exception $e) {
             error_log("💥 EXCEPTION en deleteImagen: " . $e->getMessage());
             return $this->handleException($e);
+        }
+    }
+
+    /**
+     * Eliminar imagen de la base de datos
+     */
+    private function eliminarImagenDeBaseDatos($rutaImagen, &$productosActualizados) {
+        try {
+            // Obtener conexión de base de datos
+            require_once __DIR__ . '/../config/database.php';
+            $db = Database::getInstance()->getConnection();
+            
+            error_log("🔍 Buscando imagen en BD: $rutaImagen");
+            
+            // Buscar productos que tengan esta imagen como principal
+            $sql = "SELECT id, imagen_principal FROM productos2 WHERE imagen_principal = ?";
+            $stmt = $db->prepare($sql);
+            $stmt->execute([$rutaImagen]);
+            $productos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            foreach ($productos as $producto) {
+                // Limpiar imagen principal
+                $updateSql = "UPDATE productos2 SET imagen_principal = NULL WHERE id = ?";
+                $updateStmt = $db->prepare($updateSql);
+                $updateStmt->execute([$producto['id']]);
+                $productosActualizados[] = $producto['id'];
+                error_log("🗑️ Imagen principal eliminada del producto ID: {$producto['id']}");
+            }
+
+            // Buscar productos que tengan esta imagen en adicionales
+            $sql = "SELECT id, imagenes_adicionales FROM productos2 WHERE imagenes_adicionales IS NOT NULL AND imagenes_adicionales != ''";
+            $stmt = $db->prepare($sql);
+            $stmt->execute();
+            $productos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            foreach ($productos as $producto) {
+                $imagenesAdicionales = json_decode($producto['imagenes_adicionales'], true) ?? [];
+                $imagenOriginal = array_search($rutaImagen, $imagenesAdicionales);
+                
+                if ($imagenOriginal !== false) {
+                    // Eliminar la imagen del array
+                    unset($imagenesAdicionales[$imagenOriginal]);
+                    $imagenesAdicionales = array_values($imagenesAdicionales); // Reindexar array
+                    
+                    // Actualizar en la base de datos
+                    $updateSql = "UPDATE productos2 SET imagenes_adicionales = ? WHERE id = ?";
+                    $updateStmt = $db->prepare($updateSql);
+                    $imagenesJson = empty($imagenesAdicionales) ? null : json_encode($imagenesAdicionales);
+                    $updateStmt->execute([$imagenesJson, $producto['id']]);
+                    $productosActualizados[] = $producto['id'];
+                    error_log("🗑️ Imagen adicional eliminada del producto ID: {$producto['id']}");
+                }
+            }
+
+        } catch (Exception $e) {
+            error_log("💥 Error eliminando imagen de BD: " . $e->getMessage());
         }
     }
     

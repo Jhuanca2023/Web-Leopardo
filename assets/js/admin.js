@@ -127,8 +127,10 @@ function eliminarImagenesOcultas() {
 
   inputs.forEach(input => {
     const style = window.getComputedStyle(input);
-    if (style.display === 'none' && input.value.trim() !== '') {
+    // Verificar si está oculto O marcado para eliminación
+    if ((style.display === 'none' || input.classList.contains('imagen-eliminada')) && input.value.trim() !== '') {
       rutasAEliminar.push(input.value.trim());
+      console.log('Imagen a eliminar:', input.value.trim());
     }
   });
 
@@ -137,6 +139,7 @@ function eliminarImagenesOcultas() {
     return $.Deferred().resolve().promise(); // Devuelve promesa resuelta para encadenar luego
   }
 
+  console.log('Eliminando imágenes:', rutasAEliminar);
   return API.post('/imagenes/eliminar', { rutas: rutasAEliminar })
     .done(function (response) {
       Utils.showNotification('Imágenes eliminadas correctamente', 'success');
@@ -155,20 +158,64 @@ function subirNuevasImagenes() {
     return $.Deferred().resolve().promise(); // Para encadenar luego
   }
 
+  console.log('Subiendo imágenes:', archivosAdicionales);
+
   const formData = new FormData();
   archivosAdicionales.forEach(({ idImagen, file }) => {
     formData.append(file.name, file);
+    console.log('Agregando archivo:', file.name, 'Tamaño:', file.size);
   });
 
-  return API.post('/imagenes/subir', formData)
+  // Usar $.ajax directamente para subir archivos (sin JSON.stringify)
+  return $.ajax({
+    url: APP_CONFIG.apiBaseUrl + '/imagenes/subir',
+    type: 'POST',
+    data: formData,
+    processData: false, // Importante: no procesar los datos
+    contentType: false, // Importante: no establecer contentType
+    dataType: 'json',
+    timeout: 30000,
+    xhrFields: {
+      withCredentials: true
+    },
+    beforeSend: function(xhr) {
+      // Agregar headers de autenticación si es necesario
+      const token = localStorage.getItem('auth_token');
+      if (token) {
+        xhr.setRequestHeader('Authorization', 'Bearer ' + token);
+      }
+    }
+  })
     .done(function (response) {
       Utils.showNotification('Imágenes subidas correctamente', 'success');
       console.log('Subidas:', response);
+      
+      // Limpiar el array de archivos después de subir
+      archivosAdicionales = [];
     })
-    .fail(function (xhr) {
+    .fail(function (xhr, status, error) {
       console.error('Error al subir imágenes:', xhr);
-      const error = xhr.responseJSON ? xhr.responseJSON.error : 'Error al subir imágenes';
-      Utils.showNotification(error, 'error');
+      console.error('Status:', status);
+      console.error('Error:', error);
+      
+      let errorMessage = 'Error al subir imágenes';
+      
+      if (xhr.responseJSON && xhr.responseJSON.error) {
+        errorMessage = xhr.responseJSON.error;
+      } else if (xhr.responseText) {
+        try {
+          const response = JSON.parse(xhr.responseText);
+          errorMessage = response.error || response.message || errorMessage;
+        } catch (e) {
+          errorMessage = xhr.responseText || errorMessage;
+        }
+      } else if (status === 'timeout') {
+        errorMessage = 'La subida de imágenes tardó demasiado. Intenta con imágenes más pequeñas.';
+      } else if (status === 'parsererror') {
+        errorMessage = 'Error al procesar la respuesta del servidor.';
+      }
+      
+      Utils.showNotification(errorMessage, 'error');
     });
 }
 
@@ -239,8 +286,8 @@ function agregarImagesAdicionales(){
   btnEliminar.onclick = () => {
   // Eliminar del DOM
   div.remove();
-  // Eliminar del array global imagenesAdicionales
-  archivosAdicionales= archivosAdicionales.filter(img => img.id !== idImagen);
+  // Eliminar del array global archivosAdicionales
+  archivosAdicionales = archivosAdicionales.filter(img => img.idImagen !== idImagen);
   };
 
   // añadir todo al contenedor
@@ -647,7 +694,12 @@ function setupProductModal(producto, modal, form, modalTitle) {
                 btnEliminar.style.border = 'none';
                 btnEliminar.style.padding = '6px 10px';
                 btnEliminar.style.borderRadius = '4px';
-                btnEliminar.onclick = () => {div.style.display = 'none';};
+                btnEliminar.onclick = () => {
+                    // Marcar el input como eliminado agregando una clase especial
+                    input.classList.add('imagen-eliminada');
+                    div.style.display = 'none';
+                    console.log('Imagen marcada para eliminación:', input.value);
+                };
 
                 // Agregar elementos
                 div.appendChild(input);
@@ -753,9 +805,17 @@ function saveProduct() {
     let imagenesAdicionales = obtenerRutasImagenesAdicionales();    
     
     // Procesar imagen principal
-    const imagenPrincipal = `assets/images/${document.getElementById('rutaImagenPrincipal').textContent}`;
+    const nombreImagenPrincipal = document.getElementById('rutaImagenPrincipal').textContent;
+    const imagenPrincipal = nombreImagenPrincipal ? `assets/images/${nombreImagenPrincipal}` : null;
     const archivoImagenPrincipal = document.getElementById("imagenPrincipalInput").files[0];
-    // if (archivoImagenPrincipal) archivosAdicionales.push({ idImagen: Date.now(), file: archivo });
+    
+    // Agregar imagen principal al array de archivos para subir
+    if (archivoImagenPrincipal) {
+        archivosAdicionales.push({ 
+            idImagen: 'imagen-principal-' + Date.now(), 
+            file: archivoImagenPrincipal 
+        });
+    }
     
     // Procesar stock por tallas (sistema dinámico)
     const tallasStock = getTallasStockObject();
@@ -801,8 +861,8 @@ function saveProduct() {
     // Guardar producto
     API[method](url, productData)
         .done(function() {
-            // eliminarImagenesOcultas();
-            // subirNuevasImagenes();
+            eliminarImagenesOcultas();
+            subirNuevasImagenes();
             
             Utils.showNotification(
                 `Producto ${isEdit ? 'actualizado' : 'creado'} correctamente`, 
