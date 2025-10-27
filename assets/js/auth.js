@@ -193,6 +193,9 @@ const AuthManager = {
             $('#auth-menu').show();
             $('.admin-only').hide();
         }
+        
+        // Disparar evento para actualizar el menú móvil
+        document.dispatchEvent(new Event('authStateChanged'));
     },
 
     /**

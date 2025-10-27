@@ -49,6 +49,9 @@ class MobileMenu {
             if (icon) {
                 icon.className = 'fas fa-times';
             }
+            
+            // Actualizar el estado de autenticación cada vez que se abre el menú
+            this.updateAuthState();
         }
     }
 
@@ -165,25 +168,98 @@ class MobileMenu {
     }
 
     updateAuthState() {
-        const userMenu = document.getElementById('user-menu');
-        const authMenu = document.getElementById('auth-menu');
+        console.log('🔄 Actualizando estado de autenticación móvil...');
         
-        if (userMenu && userMenu.style.display !== 'none') {
-            const userName = document.getElementById('user-name')?.textContent;
-            if (this.mobileLoginBtn) {
-                this.mobileLoginBtn.innerHTML = `
-                    <i class="fas fa-user me-2"></i>
-                    ${userName || 'Mi Perfil'}
-                `;
-                this.mobileLoginBtn.href = '/perfil';
+        // Cargar usuario desde localStorage si AppState aún no lo tiene
+        if (!AppState.user) {
+            const savedUser = localStorage.getItem(APP_CONFIG?.userKey || 'leopardo_user');
+            if (savedUser && savedUser !== 'undefined' && savedUser !== 'null') {
+                try {
+                    AppState.user = JSON.parse(savedUser);
+                } catch (e) {
+                    console.error('Error parsing user from localStorage:', e);
+                    localStorage.removeItem(APP_CONFIG?.userKey || 'leopardo_user');
+                }
+            }
+        }
+        
+        // Verificar si el usuario está autenticado
+        const isAuthenticated = AppState && AppState.user && AppState.user.id;
+        
+        console.log('📱 Estado de autenticación móvil:', { 
+            isAuthenticated, 
+            hasAppState: !!AppState, 
+            hasUser: !!(AppState && AppState.user),
+            userId: AppState && AppState.user ? AppState.user.id : 'no user',
+            userName: AppState && AppState.user ? AppState.user.name : 'no user'
+        });
+        
+            // Obtener elementos del menú
+        const mobileUserMenu = document.getElementById('mobile-user-menu');
+        const mobileLoginContainer = document.getElementById('mobile-login-container');
+        
+        console.log('🔍 Elementos del menú móvil:', {
+            mobileUserMenu: !!mobileUserMenu,
+            mobileLoginContainer: !!mobileLoginContainer
+        });
+        
+        if (isAuthenticated) {
+            console.log('🔐 Usuario autenticado - Configurando menú móvil');
+            // Usuario autenticado - mostrar menú de usuario y ocultar contenedor de login
+            if (mobileUserMenu) {
+                console.log('✅ mobileUserMenu existe, configurando...');
+                mobileUserMenu.style.display = 'block';
+                console.log('✅ Mostrando menú de usuario móvil');
+                
+                // Mostrar/ocultar "Panel Administrador" según el rol
+                const mobileAdminLink = document.getElementById('mobile-admin-link');
+                if (mobileAdminLink) {
+                    // Verificar si el usuario es admin usando AppState
+                    const isAdmin = AppState.user && AppState.user.es_admin;
+                    console.log('👤 Es admin?', isAdmin, 'user.es_admin:', AppState.user?.es_admin);
+                    if (isAdmin) {
+                        mobileAdminLink.style.display = 'block';
+                        console.log('✅ Mostrando Panel Admin');
+                    } else {
+                        mobileAdminLink.style.display = 'none';
+                        console.log('❌ Ocultando Panel Admin');
+                    }
+                } else {
+                    console.error('❌ No se encontró el elemento mobile-admin-link');
+                }
+            } else {
+                console.error('❌ PROBLEMA: No se encontró el elemento mobile-user-menu');
+            }
+            
+            if (mobileLoginContainer) {
+                mobileLoginContainer.style.display = 'none';
+                console.log('✅ Ocultando contenedor de login');
+            }
+            
+            // Configurar el botón de logout móvil
+            const mobileLogoutBtn = document.getElementById('mobile-logout-btn');
+            if (mobileLogoutBtn) {
+                // Limpiar listeners previos para evitar duplicados
+                mobileLogoutBtn.replaceWith(mobileLogoutBtn.cloneNode(true));
+                const newLogoutBtn = document.getElementById('mobile-logout-btn');
+                
+                newLogoutBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    if (document.getElementById('logout-btn')) {
+                        document.getElementById('logout-btn').click();
+                    }
+                });
             }
         } else {
-            if (this.mobileLoginBtn) {
-                this.mobileLoginBtn.innerHTML = `
-                    <i class="fas fa-sign-in-alt me-2"></i>
-                    Iniciar sesión
-                `;
-                this.mobileLoginBtn.href = '/login';
+            // Usuario no autenticado - mostrar contenedor de login y ocultar menú de usuario
+            if (mobileUserMenu) {
+                mobileUserMenu.style.display = 'none';
+                console.log('❌ Ocultando menú de usuario móvil');
+            }
+            
+            if (mobileLoginContainer) {
+                mobileLoginContainer.style.display = 'block';
+                console.log('✅ Mostrando contenedor de login');
             }
         }
     }
@@ -231,6 +307,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // Sincronizar después de que se cargue el carrito
     setTimeout(() => {
         window.mobileMenu?.forceSyncCartBadge();
+        // También actualizar estado de autenticación después de un delay para asegurar que AppState esté cargado
+        window.mobileMenu?.updateAuthState();
     }, 500);
     
     document.addEventListener('cartUpdated', () => {
@@ -239,6 +317,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.addEventListener('authStateChanged', () => {
         window.mobileMenu?.refresh();
     });
+    
 });
 
 window.MobileMenu = MobileMenu;

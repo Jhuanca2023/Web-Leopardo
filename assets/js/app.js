@@ -429,6 +429,9 @@ const Auth = {
             $('#user-menu').hide();
             $('#auth-menu').show();
         }
+        
+        // Disparar evento para actualizar el menú móvil
+        document.dispatchEvent(new Event('authStateChanged'));
     },
 
     /**
@@ -1133,9 +1136,14 @@ $(document).ready(function() {
     console.log('Leopardo E-commerce iniciado');    
     // Cargar estado inicial
     const savedUser = localStorage.getItem(APP_CONFIG.userKey);
-    if (savedUser) {
-        AppState.user = JSON.parse(savedUser);
-        Auth.updateUI();
+    if (savedUser && savedUser !== 'undefined' && savedUser !== 'null') {
+        try {
+            AppState.user = JSON.parse(savedUser);
+            Auth.updateUI();
+        } catch (e) {
+            console.error('Error parsing user from localStorage:', e);
+            localStorage.removeItem(APP_CONFIG.userKey);
+        }
     }
     
     // Verificar autenticación y luego cargar carrito

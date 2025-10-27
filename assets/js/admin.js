@@ -463,12 +463,26 @@ function renderProductsTable() {
     tbody.innerHTML = '';
     AdminState.productos.forEach(producto => {
         const tr = document.createElement('tr');
+        
+        // Manejar correctamente las rutas de imágenes (absolutas o relativas)
+        let imgSrc = 'assets/images/producto-default.jpg';
+        if (producto.imagen_principal) {
+            if (producto.imagen_principal.startsWith('http://') || producto.imagen_principal.startsWith('https://')) {
+                imgSrc = producto.imagen_principal; // URL absoluta de la web
+            } else if (producto.imagen_principal.startsWith('/')) {
+                imgSrc = producto.imagen_principal; // Ya tiene el / inicial
+            } else {
+                imgSrc = '/' + producto.imagen_principal; // Ruta relativa
+            }
+        }
+        
         tr.innerHTML = `
             <td>
-                <img src="/${producto.imagen_principal || 'assets/images/producto-default.jpg'}" 
+                <img src="${imgSrc}" 
                      alt="${Utils.sanitizeHtml(producto.nombre)}" 
                      class="admin-product-img"
-                     style="width: 50px; height: 50px; object-fit: cover; border-radius: 8px;">
+                     style="width: 50px; height: 50px; object-fit: cover; border-radius: 8px;"
+                     onerror="this.src='/assets/images/producto-default.jpg'">
             </td>
             <td>
                 <div class="fw-medium">${Utils.sanitizeHtml(producto.nombre)}</div>
@@ -620,7 +634,9 @@ function showProductModal(producto = null) {
 
 // Función auxiliar para configurar el modal una vez que las categorías estén listas
 function setupProductModal(producto, modal, form, modalTitle) {
+    // Limpiar siempre las listas de imágenes adicionales
     document.getElementById("listaImagenAdicional").innerHTML = "";
+    archivosAdicionales = [];
     
     if (producto) {
         // Modo edición
@@ -667,17 +683,29 @@ function setupProductModal(producto, modal, form, modalTitle) {
             });
         }
         
-        document.getElementById("textoImagenPrincipal").innerHTML = `Imagen cargada: <span id="rutaImagenPrincipal">${producto.imagen_principal.split('/').pop()}</span>`;
+        // Obtener el nombre del archivo de la ruta de la imagen
+        let imagenNombre = 'Sin imagen';
+        if (producto.imagen_principal) {
+            if (producto.imagen_principal.includes('/')) {
+                imagenNombre = producto.imagen_principal.split('/').pop();
+            } else {
+                imagenNombre = producto.imagen_principal;
+            }
+        }
+        document.getElementById("textoImagenPrincipal").innerHTML = `Imagen cargada: <span id="rutaImagenPrincipal">${imagenNombre}</span>`;
         
         const inputImagen = document.getElementById("imagenPrincipalInput");
-        inputImagen.addEventListener("change", () => {
-            const archivo = inputImagen.files[0]; // Obtiene el primer archivo seleccionado
-            if (archivo) {
-                document.getElementById("rutaImagenPrincipal").textContent = archivo.name;
-            } else {
-                document.getElementById("rutaImagenPrincipal").textContent = "";
-            }
-        });
+        if (!inputImagen._changeHandler) {
+            inputImagen._changeHandler = () => {
+                const archivo = inputImagen.files[0];
+                if (archivo) {
+                    document.getElementById("rutaImagenPrincipal").textContent = archivo.name;
+                } else {
+                    document.getElementById("rutaImagenPrincipal").textContent = imagenNombre;
+                }
+            };
+            inputImagen.addEventListener("change", inputImagen._changeHandler);
+        }
 
         const lista = document.getElementById('listaImagenAdicional');
         lista.innerHTML = ''; // Limpia la lista antes de cargar nuevas
@@ -733,6 +761,36 @@ function setupProductModal(producto, modal, form, modalTitle) {
         document.getElementById('product-activo').checked = true;
         document.getElementById('product-destacado').value = '0';
         document.getElementById('product-impermeable').value = '0';
+        
+        // Limpiar la imagen principal
+        document.getElementById("textoImagenPrincipal").innerHTML = 'Seleccionar imagen: <span id="rutaImagenPrincipal"></span>';
+        const inputImagenPrincipal = document.getElementById("imagenPrincipalInput");
+        if (inputImagenPrincipal) {
+            inputImagenPrincipal.value = '';
+        }
+        
+        // Limpiar el array de archivos adicionales
+        archivosAdicionales = [];
+        
+        // Limpiar la lista de imágenes adicionales
+        const listaImagenAdicional = document.getElementById('listaImagenAdicional');
+        if (listaImagenAdicional) {
+            listaImagenAdicional.innerHTML = '';
+        }
+        
+        // Restablecer el event listener para la imagen principal
+        if (inputImagenPrincipal) {
+            inputImagenPrincipal.removeEventListener('change', inputImagenPrincipal._changeHandler);
+            inputImagenPrincipal._changeHandler = () => {
+                const archivo = inputImagenPrincipal.files[0];
+                if (archivo) {
+                    document.getElementById("rutaImagenPrincipal").textContent = archivo.name;
+                } else {
+                    document.getElementById("rutaImagenPrincipal").textContent = "";
+                }
+            };
+            inputImagenPrincipal.addEventListener('change', inputImagenPrincipal._changeHandler);
+        }
     }
     
     // Cargar categorías en el select (ahora garantizadas como cargadas)
