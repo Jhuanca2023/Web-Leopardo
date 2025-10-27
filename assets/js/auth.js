@@ -8,7 +8,7 @@ const AuthManager = {
      * Verificar estado de autenticación al cargar la página
      */
     checkAuthStatus: function() {
-        return API.get('https://leopardo.tecnovedadesweb.site/api/auth/check')
+        return API.get('/auth/check')
             .done(function(response) {
                 if (response.user) {
                     AppState.user = response.user;
@@ -28,7 +28,7 @@ const AuthManager = {
     login: function(email, password) {
         Utils.showLoading('Iniciando sesión...');
         
-        return API.post('https://leopardo.tecnovedadesweb.site/api/auth/login', { email, password })
+        return API.post('/auth/login', { email, password })
             .done(function(response) {
                 AppState.user = response.user;
                 localStorage.setItem(APP_CONFIG.userKey, JSON.stringify(response.user));
@@ -76,7 +76,7 @@ const AuthManager = {
             return Promise.reject('Datos inválidos');
         }
         console.log(userData)
-        return API.post('https://leopardo.tecnovedadesweb.site/api/auth/register', userData)
+        return API.post('/auth/register', userData)
             .done(function(response) {
                 AppState.user = response.user;
                 localStorage.setItem(APP_CONFIG.userKey, JSON.stringify(response.user));
@@ -100,7 +100,7 @@ const AuthManager = {
     logout: function() {
         Utils.showLoading('Cerrando sesión...');
         
-        return API.post('https://leopardo.tecnovedadesweb.site/api/auth/logout')
+        return API.post('/auth/logout')
             .always(function() {
                 AuthManager.clearAuthState();
                 Utils.showNotification('Sesión cerrada', 'info');
@@ -113,7 +113,7 @@ const AuthManager = {
      * Obtener perfil del usuario
      */
     getProfile: function() {
-        return API.get('https://leopardo.tecnovedadesweb.site/api/auth/profile')
+        return API.get('/auth/profile')
             .done(function(response) {
                 AppState.user = response;
                 localStorage.setItem(APP_CONFIG.userKey, JSON.stringify(response));
@@ -127,7 +127,7 @@ const AuthManager = {
     updateProfile: function(profileData) {
         Utils.showLoading('Actualizando perfil...');
         
-        return API.put('https://leopardo.tecnovedadesweb.site/api/auth/profile', profileData)
+        return API.put('/auth/profile', profileData)
             .done(function(response) {
                 AppState.user = response.user;
                 localStorage.setItem(APP_CONFIG.userKey, JSON.stringify(response.user));
@@ -149,7 +149,7 @@ const AuthManager = {
     changePassword: function(currentPassword, newPassword) {
         Utils.showLoading('Cambiando contraseña...');
         
-        return API.post('https://leopardo.tecnovedadesweb.site/api/auth/change-password', {
+        return API.post('/auth/change-password', {
             current_password: currentPassword,
             new_password: newPassword
         })

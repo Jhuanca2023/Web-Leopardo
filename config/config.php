@@ -17,7 +17,7 @@ define('DB_CHARSET', 'utf8mb4');
 // ================================
 define('APP_NAME', 'Leopardo E-commerce');
 define('APP_VERSION', '1.0.0');
-define('APP_URL', 'https://leopardo.tecnovedadesweb.site'); // ✅ URL en cPanel
+define('APP_URL', 'https://calzadoindustrialleopardo.com');
 
 // ================================
 // 🔹 Configuración de sesiones

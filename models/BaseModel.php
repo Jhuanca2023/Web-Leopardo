@@ -117,17 +117,31 @@ abstract class BaseModel {
             error_log("Parámetros: " . json_encode($params));
             
             $stmt = $this->db->prepare($sql);
+            
+            // Configurar PDO para lanzar excepciones
+            $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            
             $result = $stmt->execute($params);
             
             error_log("Resultado execute: " . ($result ? 'SUCCESS' : 'FAILED'));
             error_log("Filas afectadas: " . $stmt->rowCount());
             
-            if (!$result) {
-                $errorInfo = $stmt->errorInfo();
-                error_log("Error SQL: " . json_encode($errorInfo));
+            return $result;
+            
+        } catch (PDOException $e) {
+            error_log("💥 PDO EXCEPTION en BaseModel::update: " . $e->getMessage());
+            error_log("Error SQLSTATE: " . $e->getCode());
+            
+            // Si es un error de duplicado, lanzar mensaje específico
+            if ($e->getCode() == '23000' && strpos($e->getMessage(), 'Duplicate entry') !== false) {
+                preg_match("/Duplicate entry '([^']+)' for key '([^']+)'/", $e->getMessage(), $matches);
+                $duplicateValue = $matches[1] ?? '';
+                $duplicateKey = $matches[2] ?? '';
+                
+                throw new Exception("El {$duplicateKey} '{$duplicateValue}' ya existe. Por favor, usa un valor diferente.");
             }
             
-            return $result;
+            throw $e;
             
         } catch (Exception $e) {
             error_log("💥 EXCEPTION en BaseModel::update: " . $e->getMessage());

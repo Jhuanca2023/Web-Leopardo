@@ -152,15 +152,31 @@ function eliminarImagenesOcultas() {
     });
 }
 
-function subirNuevasImagenes() {
-  if (archivosAdicionales.length === 0) {
+function subirNuevasImagenes(nuevaImagenPrincipal) {
+  const hasMainImage = nuevaImagenPrincipal !== null && nuevaImagenPrincipal !== undefined;
+  const hasAdditionalImages = archivosAdicionales.length > 0;
+  
+  if (!hasAdditionalImages && !hasMainImage) {
     console.log('No hay nuevas imágenes para subir');
-    return $.Deferred().resolve().promise(); // Para encadenar luego
+    const deferred = $.Deferred();
+    deferred.resolve({ subidas: [] });
+    return deferred.promise();
   }
 
-  console.log('Subiendo imágenes:', archivosAdicionales);
+  console.log('Subiendo imágenes:', { 
+    principal: hasMainImage, 
+    adicionales: archivosAdicionales.length 
+  });
 
   const formData = new FormData();
+  
+  // Subir imagen principal primero
+  if (hasMainImage) {
+    formData.append(nuevaImagenPrincipal.name, nuevaImagenPrincipal);
+    console.log('Agregando imagen principal:', nuevaImagenPrincipal.name, 'Tamaño:', nuevaImagenPrincipal.size);
+  }
+  
+  // Luego las adicionales
   archivosAdicionales.forEach(({ idImagen, file }) => {
     formData.append(file.name, file);
     console.log('Agregando archivo:', file.name, 'Tamaño:', file.size);
@@ -806,15 +822,13 @@ function saveProduct() {
     
     // Procesar imagen principal
     const nombreImagenPrincipal = document.getElementById('rutaImagenPrincipal').textContent;
-    const imagenPrincipal = nombreImagenPrincipal ? `assets/images/${nombreImagenPrincipal}` : null;
+    let imagenPrincipal = nombreImagenPrincipal ? `assets/images/${nombreImagenPrincipal}` : null;
     const archivoImagenPrincipal = document.getElementById("imagenPrincipalInput").files[0];
     
-    // Agregar imagen principal al array de archivos para subir
+    // Si hay una nueva imagen principal, la agregamos al array de archivos para subir
+    let nuevaImagenPrincipal = null;
     if (archivoImagenPrincipal) {
-        archivosAdicionales.push({ 
-            idImagen: 'imagen-principal-' + Date.now(), 
-            file: archivoImagenPrincipal 
-        });
+        nuevaImagenPrincipal = archivoImagenPrincipal;
     }
     
     // Procesar stock por tallas (sistema dinámico)
@@ -856,25 +870,66 @@ function saveProduct() {
     const url = isEdit ? `/productos/${productId}` : '/productos';
     const method = isEdit ? 'put' : 'post';
     
-        console.log(productData)
+    console.log('Guardando producto:', productData);
     
-    // Guardar producto
-    API[method](url, productData)
+    // Primero subir las nuevas imágenes si hay
+    if (archivosAdicionales.length > 0 || nuevaImagenPrincipal) {
+        subirNuevasImagenes(nuevaImagenPrincipal)
+            .done(function(response) {
+                // Actualizar la ruta de la imagen principal si se subió una nueva
+                if (nuevaImagenPrincipal && response && response.subidas && response.subidas.length > 0) {
+                    productData.imagen_principal = response.subidas[0];
+                }
+                
+                // Luego actualizar el producto
+                guardarProductoActualizado(url, method, productData, isEdit);
+            })
+            .fail(function(xhr) {
+                console.error('Error al subir imágenes:', xhr);
+                Utils.showNotification('Error al subir las imágenes. Intenta de nuevo.', 'error');
+            });
+    } else {
+        // Si no hay imágenes nuevas, guardar directamente
+        guardarProductoActualizado(url, method, productData, isEdit);
+    }
+}
+
+function guardarProductoActualizado(url, method, productData, isEdit) {
+    const isEditMethod = method === 'put';
+    const finalUrl = isEditMethod ? url : url;
+    const finalMethod = isEditMethod ? 'put' : 'post';
+    
+    console.log('Guardando producto actualizado:', { finalUrl, finalMethod, productData });
+    
+    API[finalMethod](finalUrl, productData)
         .done(function() {
-            eliminarImagenesOcultas();
-            subirNuevasImagenes();
-            
-            Utils.showNotification(
-                `Producto ${isEdit ? 'actualizado' : 'creado'} correctamente`, 
-                'success'
-            );
-            
-            // Cerrar modal y recargar productos
-            const modal = bootstrap.Modal.getInstance(document.getElementById('productModal'));
-            modal.hide();
-            loadProductos();
+            // Eliminar imágenes marcadas para eliminación
+            eliminarImagenesOcultas()
+                .done(function() {
+                    Utils.showNotification(
+                        `Producto ${isEdit ? 'actualizado' : 'creado'} correctamente`, 
+                        'success'
+                    );
+                    
+                    // Cerrar modal y recargar productos
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('productModal'));
+                    modal.hide();
+                    loadProductos();
+                })
+                .fail(function(xhr) {
+                    console.warn('Producto guardado pero error al eliminar imágenes viejas:', xhr);
+                    Utils.showNotification(
+                        `Producto ${isEdit ? 'actualizado' : 'creado'} correctamente`, 
+                        'success'
+                    );
+                    
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('productModal'));
+                    modal.hide();
+                    loadProductos();
+                });
         })
         .fail(function(xhr) {
+            console.error('Error al guardar producto:', xhr);
             const error = xhr.responseJSON ? xhr.responseJSON.error : 'Error al guardar el producto';
             Utils.showNotification(error, 'error');
         });

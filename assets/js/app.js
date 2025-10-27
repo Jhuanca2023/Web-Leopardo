@@ -321,7 +321,7 @@ const Auth = {
      * Verificar estado de autenticación
      */
     checkAuth: function() {
-        return API.get('https://leopardo.tecnovedadesweb.site/api/auth/check')
+        return API.get('/auth/check')
             .done(function(response) {
                 if (response.user) {
                     AppState.user = response.user;
@@ -340,7 +340,7 @@ const Auth = {
         // Verificar si hay productos en el carrito local antes del login
         const hasCartItems = Cart.hasLocalCartItems();
         
-        return API.post('https://leopardo.tecnovedadesweb.site/api/auth/login', { email, password })
+        return API.post('/auth/login', { email, password })
             .done(function(response) {
                 AppState.user = response.user;
                 localStorage.setItem(APP_CONFIG.userKey, JSON.stringify(response.user));
@@ -379,7 +379,7 @@ const Auth = {
      */
     register: function(userData) {
         Utils.showLoading('Registrando usuario...');
-        return API.post('https://leopardo.tecnovedadesweb.site/api/auth/register', userData)
+        return API.post('/auth/register', userData)
             .done(function(response) {
                 AppState.user = response.user;
                 localStorage.setItem(APP_CONFIG.userKey, JSON.stringify(response.user));
@@ -396,7 +396,7 @@ const Auth = {
      * Cerrar sesión
      */
     logout: function() {
-        API.post('https://leopardo.tecnovedadesweb.site/api/auth/logout')
+        API.post('/auth/logout')
             .always(function() {
                 AppState.user = null;
                 localStorage.removeItem(APP_CONFIG.userKey);
@@ -482,7 +482,7 @@ const Cart = {
                 requestData.talla = item.talla;
             }
             
-            return API.post('https://leopardo.tecnovedadesweb.site/api/carrito', requestData);
+            return API.post('/carrito', requestData);
         });
         
         return Promise.all(promises)
@@ -504,7 +504,7 @@ const Cart = {
      */
     load: function() {
         if (Auth.isAuthenticated()) {
-            return API.get('https://leopardo.tecnovedadesweb.site/api/carrito')
+            return API.get('/carrito')
                 .done(function(response) {
                     AppState.cart = {
                         items: response.items || [],
@@ -552,7 +552,7 @@ const Cart = {
      */
     add: function(productId, quantity = 1) {
         if (Auth.isAuthenticated()) {
-            return API.post('https://leopardo.tecnovedadesweb.site/api/carrito', {
+            return API.post('/carrito', {
                 producto_id: productId,
                 cantidad: quantity
             }).done(function(response) {
@@ -571,7 +571,7 @@ const Cart = {
     addWithSize: function(productId, talla, quantity = 1, stockDisponible = null) {
         return new Promise((resolve, reject) => {
             if (Auth.isAuthenticated()) {
-                API.post('https://leopardo.tecnovedadesweb.site/api/carrito', {
+                API.post('/carrito', {
                     producto_id: productId,
                     talla: talla,
                     cantidad: quantity
@@ -596,7 +596,7 @@ const Cart = {
      */
     addToLocalCart: function(productId, quantity) {
         // Obtener información del producto
-        API.get(`https://leopardo.tecnovedadesweb.site/api/productos/${productId}`)
+        API.get(`/productos/${productId}`)
             .done(function(product) {
                 const existingItem = AppState.cart.items.find(item => item.producto_id == productId);
                 
@@ -646,7 +646,7 @@ const Cart = {
             Utils.showNotification('Cantidad actualizada en el carrito', 'success');
         } else {
             // Obtener información del producto
-            API.get(`https://leopardo.tecnovedadesweb.site/api/productos/${productId}`)
+            API.get(`/productos/${productId}`)
                 .done(function(product) {
                     AppState.cart.items.push({
                         id: Date.now(),
@@ -679,7 +679,7 @@ const Cart = {
         }
         
         if (Auth.isAuthenticated()) {
-            return API.put(`https://leopardo.tecnovedadesweb.site/api/carrito/${itemId}`, { cantidad: newQuantity })
+            return API.put(`/carrito/${itemId}`, { cantidad: newQuantity })
                 .done(function() {
                     Cart.load();
                 })
@@ -713,7 +713,7 @@ const Cart = {
      */
     remove: function(itemId) {
         if (Auth.isAuthenticated()) {
-            return API.delete(`https://leopardo.tecnovedadesweb.site/api/carrito/${itemId}`)
+            return API.delete(`/carrito/${itemId}`)
                 .done(function() {
                     Cart.load();
                     Utils.showNotification('Producto eliminado del carrito', 'info');
@@ -732,7 +732,7 @@ const Cart = {
      */
     clear: function() {
         if (Auth.isAuthenticated()) {
-            return API.delete('https://leopardo.tecnovedadesweb.site/api/carrito')
+            return API.delete('/carrito')
                 .done(function() {
                     Cart.load();
                     Utils.showNotification('Carrito vaciado', 'info');
@@ -1102,7 +1102,7 @@ const Categories = {
      * Cargar categorías
      */
     load: function() {
-        return API.get('https://leopardo.tecnovedadesweb.site/api/categorias')
+        return API.get('/categorias')
             .done(function(response) {
                 AppState.categories = response;
                 Categories.updateMenu();

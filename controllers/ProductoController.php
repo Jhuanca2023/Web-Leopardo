@@ -414,6 +414,23 @@ class ProductoController extends BaseController {
             
             $data = $this->sanitizeInput($data);
             error_log("🧹 Datos sanitizados: " . json_encode($data, JSON_PRETTY_PRINT));
+            
+            // Validar que el código no esté duplicado
+            if (isset($data['codigo'])) {
+                require_once __DIR__ . '/../config/database.php';
+                $db = Database::getInstance()->getConnection();
+                
+                // Buscar si el código ya existe en otro producto
+                $stmt = $db->prepare("SELECT id FROM productos2 WHERE codigo = ? AND id != ?");
+                $stmt->execute([$data['codigo'], $id]);
+                $existingProduct = $stmt->fetch();
+                
+                if ($existingProduct) {
+                    error_log("❌ Código duplicado: " . $data['codigo']);
+                    $this->errorResponse('El código del producto ya existe en otro producto. Por favor, usa un código único.', 400);
+                }
+                error_log("✅ Código único verificado: " . $data['codigo']);
+            }
 
             // Procesar campos JSON si vienen como string
             if (isset($data['imagenes_adicionales']) && is_string($data['imagenes_adicionales'])) {
