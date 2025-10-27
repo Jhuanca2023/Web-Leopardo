@@ -194,7 +194,7 @@ class FilterComponent {
     static async loadFilterOptions(config) {
         if (config.showCategoryFilter) {
             try {
-                const categories = await API.get('https://leopardo.tecnovedadesweb.site/api/categorias');
+                const categories = await API.get('/categorias');
                 const select = document.getElementById('category-filter');
                 if (select) {
                     categories.forEach(category => {

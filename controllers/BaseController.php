@@ -260,15 +260,29 @@ abstract class BaseController {
         
         $this->logError('EXCEPTION_CAUGHT: ' . $e->getMessage(), $errorDetails);
         
+        // Extraer mensaje de error del usuario si existe
+        $errorMessage = $e->getMessage();
+        
+        // Si es un error de código duplicado, mostrarlo al usuario
+        if (strpos($errorMessage, 'Duplicate entry') !== false) {
+            preg_match("/Duplicate entry '([^']+)' for key '([^']+)'/", $errorMessage, $matches);
+            $duplicateValue = $matches[1] ?? '';
+            $duplicateKey = $matches[2] ?? '';
+            
+            $this->errorResponse("El {$duplicateKey} '{$duplicateValue}' ya existe. Por favor, usa un valor diferente.", 400);
+            return;
+        }
+        
         // En desarrollo, mostrar más detalles
         if (defined('DEBUG') && DEBUG === true) {
-            $this->errorResponse('Error interno del servidor', 500, [
-                'debug_message' => $e->getMessage(),
-                'debug_file' => basename($e->getFile()),
-                'debug_line' => $e->getLine()
-            ]);
+            $this->errorResponse($errorMessage, 500);
         } else {
-            $this->errorResponse('Error interno del servidor', 500);
+            // En producción, intentar mostrar el mensaje si es amigable
+            if (strlen($errorMessage) < 200 && !preg_match('/SQLSTATE|PDO|mysqli|Unknown column/i', $errorMessage)) {
+                $this->errorResponse($errorMessage, 500);
+            } else {
+                $this->errorResponse('Error interno del servidor', 500);
+            }
         }
     }
 }

@@ -1953,7 +1953,7 @@ class Router {
     // Métodos para cargar datos específicos de cada página
     async loadCategories() {
         try {
-            const response = await API.get('https://leopardo.tecnovedadesweb.site/api/categorias');
+            const response = await API.get('/categorias');
             const container = document.getElementById('categorias-container');
             if (container) {
                 container.innerHTML = '';
@@ -1989,7 +1989,7 @@ class Router {
 
     async loadFeaturedProducts() {
         try {
-            const response = await API.get('https://leopardo.tecnovedadesweb.site/api/productos/destacados');
+            const response = await API.get('/productos/destacados');
             const container = document.getElementById('productos-destacados');
             if (container) {
                 container.innerHTML = '';
@@ -2006,7 +2006,7 @@ class Router {
 
     async loadProducts() {
         try {
-            const response = await API.get('https://leopardo.tecnovedadesweb.site/api/productos');
+            const response = await API.get('/productos');
             const container = document.getElementById('products-container');
             if (container) {
                 container.innerHTML = '';

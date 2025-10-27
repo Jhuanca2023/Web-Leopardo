@@ -152,15 +152,31 @@ function eliminarImagenesOcultas() {
     });
 }
 
-function subirNuevasImagenes() {
-  if (archivosAdicionales.length === 0) {
+function subirNuevasImagenes(nuevaImagenPrincipal) {
+  const hasMainImage = nuevaImagenPrincipal !== null && nuevaImagenPrincipal !== undefined;
+  const hasAdditionalImages = archivosAdicionales.length > 0;
+  
+  if (!hasAdditionalImages && !hasMainImage) {
     console.log('No hay nuevas imágenes para subir');
-    return $.Deferred().resolve().promise(); // Para encadenar luego
+    const deferred = $.Deferred();
+    deferred.resolve({ subidas: [] });
+    return deferred.promise();
   }
 
-  console.log('Subiendo imágenes:', archivosAdicionales);
+  console.log('Subiendo imágenes:', { 
+    principal: hasMainImage, 
+    adicionales: archivosAdicionales.length 
+  });
 
   const formData = new FormData();
+  
+  // Subir imagen principal primero
+  if (hasMainImage) {
+    formData.append(nuevaImagenPrincipal.name, nuevaImagenPrincipal);
+    console.log('Agregando imagen principal:', nuevaImagenPrincipal.name, 'Tamaño:', nuevaImagenPrincipal.size);
+  }
+  
+  // Luego las adicionales
   archivosAdicionales.forEach(({ idImagen, file }) => {
     formData.append(file.name, file);
     console.log('Agregando archivo:', file.name, 'Tamaño:', file.size);
@@ -447,12 +463,26 @@ function renderProductsTable() {
     tbody.innerHTML = '';
     AdminState.productos.forEach(producto => {
         const tr = document.createElement('tr');
+        
+        // Manejar correctamente las rutas de imágenes (absolutas o relativas)
+        let imgSrc = 'assets/images/producto-default.jpg';
+        if (producto.imagen_principal) {
+            if (producto.imagen_principal.startsWith('http://') || producto.imagen_principal.startsWith('https://')) {
+                imgSrc = producto.imagen_principal; // URL absoluta de la web
+            } else if (producto.imagen_principal.startsWith('/')) {
+                imgSrc = producto.imagen_principal; // Ya tiene el / inicial
+            } else {
+                imgSrc = '/' + producto.imagen_principal; // Ruta relativa
+            }
+        }
+        
         tr.innerHTML = `
             <td>
-                <img src="/${producto.imagen_principal || 'assets/images/producto-default.jpg'}" 
+                <img src="${imgSrc}" 
                      alt="${Utils.sanitizeHtml(producto.nombre)}" 
                      class="admin-product-img"
-                     style="width: 50px; height: 50px; object-fit: cover; border-radius: 8px;">
+                     style="width: 50px; height: 50px; object-fit: cover; border-radius: 8px;"
+                     onerror="this.src='/assets/images/producto-default.jpg'">
             </td>
             <td>
                 <div class="fw-medium">${Utils.sanitizeHtml(producto.nombre)}</div>
@@ -604,7 +634,9 @@ function showProductModal(producto = null) {
 
 // Función auxiliar para configurar el modal una vez que las categorías estén listas
 function setupProductModal(producto, modal, form, modalTitle) {
+    // Limpiar siempre las listas de imágenes adicionales
     document.getElementById("listaImagenAdicional").innerHTML = "";
+    archivosAdicionales = [];
     
     if (producto) {
         // Modo edición
@@ -651,17 +683,29 @@ function setupProductModal(producto, modal, form, modalTitle) {
             });
         }
         
-        document.getElementById("textoImagenPrincipal").innerHTML = `Imagen cargada: <span id="rutaImagenPrincipal">${producto.imagen_principal.split('/').pop()}</span>`;
+        // Obtener el nombre del archivo de la ruta de la imagen
+        let imagenNombre = 'Sin imagen';
+        if (producto.imagen_principal) {
+            if (producto.imagen_principal.includes('/')) {
+                imagenNombre = producto.imagen_principal.split('/').pop();
+            } else {
+                imagenNombre = producto.imagen_principal;
+            }
+        }
+        document.getElementById("textoImagenPrincipal").innerHTML = `Imagen cargada: <span id="rutaImagenPrincipal">${imagenNombre}</span>`;
         
         const inputImagen = document.getElementById("imagenPrincipalInput");
-        inputImagen.addEventListener("change", () => {
-            const archivo = inputImagen.files[0]; // Obtiene el primer archivo seleccionado
-            if (archivo) {
-                document.getElementById("rutaImagenPrincipal").textContent = archivo.name;
-            } else {
-                document.getElementById("rutaImagenPrincipal").textContent = "";
-            }
-        });
+        if (!inputImagen._changeHandler) {
+            inputImagen._changeHandler = () => {
+                const archivo = inputImagen.files[0];
+                if (archivo) {
+                    document.getElementById("rutaImagenPrincipal").textContent = archivo.name;
+                } else {
+                    document.getElementById("rutaImagenPrincipal").textContent = imagenNombre;
+                }
+            };
+            inputImagen.addEventListener("change", inputImagen._changeHandler);
+        }
 
         const lista = document.getElementById('listaImagenAdicional');
         lista.innerHTML = ''; // Limpia la lista antes de cargar nuevas
@@ -717,6 +761,36 @@ function setupProductModal(producto, modal, form, modalTitle) {
         document.getElementById('product-activo').checked = true;
         document.getElementById('product-destacado').value = '0';
         document.getElementById('product-impermeable').value = '0';
+        
+        // Limpiar la imagen principal
+        document.getElementById("textoImagenPrincipal").innerHTML = 'Seleccionar imagen: <span id="rutaImagenPrincipal"></span>';
+        const inputImagenPrincipal = document.getElementById("imagenPrincipalInput");
+        if (inputImagenPrincipal) {
+            inputImagenPrincipal.value = '';
+        }
+        
+        // Limpiar el array de archivos adicionales
+        archivosAdicionales = [];
+        
+        // Limpiar la lista de imágenes adicionales
+        const listaImagenAdicional = document.getElementById('listaImagenAdicional');
+        if (listaImagenAdicional) {
+            listaImagenAdicional.innerHTML = '';
+        }
+        
+        // Restablecer el event listener para la imagen principal
+        if (inputImagenPrincipal) {
+            inputImagenPrincipal.removeEventListener('change', inputImagenPrincipal._changeHandler);
+            inputImagenPrincipal._changeHandler = () => {
+                const archivo = inputImagenPrincipal.files[0];
+                if (archivo) {
+                    document.getElementById("rutaImagenPrincipal").textContent = archivo.name;
+                } else {
+                    document.getElementById("rutaImagenPrincipal").textContent = "";
+                }
+            };
+            inputImagenPrincipal.addEventListener('change', inputImagenPrincipal._changeHandler);
+        }
     }
     
     // Cargar categorías en el select (ahora garantizadas como cargadas)
@@ -806,15 +880,13 @@ function saveProduct() {
     
     // Procesar imagen principal
     const nombreImagenPrincipal = document.getElementById('rutaImagenPrincipal').textContent;
-    const imagenPrincipal = nombreImagenPrincipal ? `assets/images/${nombreImagenPrincipal}` : null;
+    let imagenPrincipal = nombreImagenPrincipal ? `assets/images/${nombreImagenPrincipal}` : null;
     const archivoImagenPrincipal = document.getElementById("imagenPrincipalInput").files[0];
     
-    // Agregar imagen principal al array de archivos para subir
+    // Si hay una nueva imagen principal, la agregamos al array de archivos para subir
+    let nuevaImagenPrincipal = null;
     if (archivoImagenPrincipal) {
-        archivosAdicionales.push({ 
-            idImagen: 'imagen-principal-' + Date.now(), 
-            file: archivoImagenPrincipal 
-        });
+        nuevaImagenPrincipal = archivoImagenPrincipal;
     }
     
     // Procesar stock por tallas (sistema dinámico)
@@ -856,25 +928,66 @@ function saveProduct() {
     const url = isEdit ? `/productos/${productId}` : '/productos';
     const method = isEdit ? 'put' : 'post';
     
-        console.log(productData)
+    console.log('Guardando producto:', productData);
     
-    // Guardar producto
-    API[method](url, productData)
+    // Primero subir las nuevas imágenes si hay
+    if (archivosAdicionales.length > 0 || nuevaImagenPrincipal) {
+        subirNuevasImagenes(nuevaImagenPrincipal)
+            .done(function(response) {
+                // Actualizar la ruta de la imagen principal si se subió una nueva
+                if (nuevaImagenPrincipal && response && response.subidas && response.subidas.length > 0) {
+                    productData.imagen_principal = response.subidas[0];
+                }
+                
+                // Luego actualizar el producto
+                guardarProductoActualizado(url, method, productData, isEdit);
+            })
+            .fail(function(xhr) {
+                console.error('Error al subir imágenes:', xhr);
+                Utils.showNotification('Error al subir las imágenes. Intenta de nuevo.', 'error');
+            });
+    } else {
+        // Si no hay imágenes nuevas, guardar directamente
+        guardarProductoActualizado(url, method, productData, isEdit);
+    }
+}
+
+function guardarProductoActualizado(url, method, productData, isEdit) {
+    const isEditMethod = method === 'put';
+    const finalUrl = isEditMethod ? url : url;
+    const finalMethod = isEditMethod ? 'put' : 'post';
+    
+    console.log('Guardando producto actualizado:', { finalUrl, finalMethod, productData });
+    
+    API[finalMethod](finalUrl, productData)
         .done(function() {
-            eliminarImagenesOcultas();
-            subirNuevasImagenes();
-            
-            Utils.showNotification(
-                `Producto ${isEdit ? 'actualizado' : 'creado'} correctamente`, 
-                'success'
-            );
-            
-            // Cerrar modal y recargar productos
-            const modal = bootstrap.Modal.getInstance(document.getElementById('productModal'));
-            modal.hide();
-            loadProductos();
+            // Eliminar imágenes marcadas para eliminación
+            eliminarImagenesOcultas()
+                .done(function() {
+                    Utils.showNotification(
+                        `Producto ${isEdit ? 'actualizado' : 'creado'} correctamente`, 
+                        'success'
+                    );
+                    
+                    // Cerrar modal y recargar productos
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('productModal'));
+                    modal.hide();
+                    loadProductos();
+                })
+                .fail(function(xhr) {
+                    console.warn('Producto guardado pero error al eliminar imágenes viejas:', xhr);
+                    Utils.showNotification(
+                        `Producto ${isEdit ? 'actualizado' : 'creado'} correctamente`, 
+                        'success'
+                    );
+                    
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('productModal'));
+                    modal.hide();
+                    loadProductos();
+                });
         })
         .fail(function(xhr) {
+            console.error('Error al guardar producto:', xhr);
             const error = xhr.responseJSON ? xhr.responseJSON.error : 'Error al guardar el producto';
             Utils.showNotification(error, 'error');
         });
