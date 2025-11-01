@@ -236,7 +236,7 @@ Este proyecto está bajo la licencia MIT. Ver el archivo LICENSE para más detal
 ## Soporte
 
 Para soporte técnico o preguntas:
-- Email: contacto@calzadoindustrialleopardo.com
+- Email: pierregomezsanchez@gmail.com
 - Teléfono: +51 940-870-622
 
 ---

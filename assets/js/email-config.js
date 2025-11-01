@@ -23,7 +23,7 @@ window.EmailConfig = {
     templateId: "template_yc7xcw1",
     
     // Email de destino (opcional, también se puede definir en la plantilla)
-    destinationEmail: "contacto@calzadoindustrialleopardo.com"
+    destinationEmail: "pierregomezsanchez@gmail.com"
 };
 
 // Función de validación para verificar que la configuración está completa
