@@ -264,7 +264,7 @@ Este proyecto está bajo la Licencia MIT. Ver el archivo `LICENSE` para más det
 ## 📞 Soporte
 
 Para soporte técnico o consultas:
-- Email: soporte@leopardo.com
+- Email: contacto@calzadoindustrialleopardo.com
 - Documentación: [Wiki del proyecto]
 
 ---

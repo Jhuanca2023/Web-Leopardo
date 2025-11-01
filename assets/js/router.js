@@ -1600,7 +1600,7 @@ class Router {
                                 
                                 <div class="mb-3">
                                     <h6><i class="fas fa-envelope me-2"></i>Email</h6>
-                                    <p><a href="mailto:info@leopardo.com" class="text-decoration-none">info@leopardo.com</a></p>
+                                    <p><a href="mailto:contacto@calzadoindustrialleopardo.com" class="text-decoration-none">contacto@calzadoindustrialleopardo.com</a></p>
                                 </div>
                                 
                                 <div class="mb-3">
@@ -2780,10 +2780,12 @@ class Router {
                     const templateParams = {
                         from_name: formData.name,
                         from_email: formData.email,
-                        to_email: window.EmailConfig.destinationEmail || 'josehuanca612@gmail.com',
-                        subject: formData.subject,
+                        to_email: window.EmailConfig.destinationEmail || 'contacto@calzadoindustrialleopardo.com',
+                        subject: 'CONTACTO CALZADO - ' + formData.subject,
                         message: formData.message,
                         reply_to: formData.email,
+                        // Nombre del remitente que aparecerá en Gmail
+                        reply_to_name: 'CALZADO CONTACT',
                         // Datos adicionales para hacer la plantilla más atractiva
                         company_name: 'Calzado Industrial Leopardo',
                         current_date: new Date().toLocaleDateString('es-PE', { 

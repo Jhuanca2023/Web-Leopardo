@@ -23,7 +23,7 @@ window.EmailConfig = {
     templateId: "template_yc7xcw1",
     
     // Email de destino (opcional, también se puede definir en la plantilla)
-    destinationEmail: "josehuanca612@gmail.com"
+    destinationEmail: "contacto@calzadoindustrialleopardo.com"
 };
 
 // Función de validación para verificar que la configuración está completa
@@ -149,6 +149,7 @@ document.addEventListener('DOMContentLoaded', function() {
 - {{subject}} - Asunto del mensaje
 - {{message}} - Contenido del mensaje
 - {{reply_to}} - Email para responder
+- {{reply_to_name}} - Nombre del remitente para Gmail (CALZADO CONTACT)
 - {{company_name}} - Nombre de la empresa  
 - {{current_date}} - Fecha y hora actual
 - {{website}} - URL del sitio web
