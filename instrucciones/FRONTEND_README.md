@@ -236,8 +236,8 @@ Este proyecto está bajo la licencia MIT. Ver el archivo LICENSE para más detal
 ## Soporte
 
 Para soporte técnico o preguntas:
-- Email: info@leopardo.com
-- Teléfono: +1 (555) 123-4567
+- Email: pierregomezsanchez@gmail.com
+- Teléfono: +51 940-870-622
 
 ---
 

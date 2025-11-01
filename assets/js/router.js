@@ -1600,7 +1600,7 @@ class Router {
                                 
                                 <div class="mb-3">
                                     <h6><i class="fas fa-envelope me-2"></i>Email</h6>
-                                    <p><a href="mailto:info@leopardo.com" class="text-decoration-none">info@leopardo.com</a></p>
+                                    <p><a href="mailto:pierregomezsanchez@gmail.com" class="text-decoration-none">pierregomezsanchez@gmail.com</a></p>
                                 </div>
                                 
                                 <div class="mb-3">
@@ -1608,7 +1608,7 @@ class Router {
                                     <p>Mz.A2 Lt. 7 villa de la Cruz Alborada<br>Puente Piedra 07056<br>Lima, Perú</p>
                                     <div class="map-container mb-3" style="position: relative; width: 100%; height: 100%; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
                                         <iframe 
-                                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3901.847!2d-77.06836!3d-11.86290!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTHCsDUxJzQ2LjQiUyA3N8KwMDQnMDYuMSJX!5e0!3m2!1ses!2spe!4v1696180800000!5m2!1ses!2spe&q=Mz.A2+Lt.7+Villa+de+la+Cruz+Alborada+Puente+Piedra+Lima" 
+                                            src="https://www.google.com/maps?q=CORPORACI%C3%93N+G%26S+LEOPARDO+S.A.C.,+Mz.A2+Lt.+7+villa+de+la+Cruz+Alborada,+Puente+Piedra+07056&output=embed" 
                                             width="100%" 
                                             height="280" 
                                             style="border: 0; border-radius: 8px; display: block; max-width: 100%; max-height: 100%;" 
@@ -1618,13 +1618,13 @@ class Router {
                                             title="Ubicación Exacta - Calzado Industrial Leopardo">
                                         </iframe>
                                         <div style="position: absolute; top: 8px; right: 8px;">
-                                            <a href="https://maps.app.goo.gl/bFq3Z5pGwer6V5bRA" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm" style="background: rgba(0,0,0,0.7); border: none;" title="Ver ubicación exacta en Google Maps">
+                                            <a href="https://maps.app.goo.gl/g1ztSx416Z1Awv1Y7" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm" style="background: rgba(0,0,0,0.7); border: none;" title="Ver ubicación exacta en Google Maps">
                                                 <i class="fas fa-external-link-alt"></i>
                                             </a>
                                         </div>
                                     </div>
                                     <div class="text-center">
-                                        <a href="https://maps.app.goo.gl/bFq3Z5pGwer6V5bRA" target="_blank" rel="noopener noreferrer" class="btn btn-outline-primary btn-sm">
+                                        <a href="https://maps.app.goo.gl/g1ztSx416Z1Awv1Y7" target="_blank" rel="noopener noreferrer" class="btn btn-outline-primary btn-sm">
                                             <i class="fas fa-route me-2"></i>Cómo llegar
                                         </a>
                                     </div>
@@ -1884,9 +1884,7 @@ class Router {
     }
 
     executeBusquedaScripts() {
-        this.loadProducts().then(() => {
-        this.setupProductFilters();
-    });
+        this.loadProducts();
     }
 
     executeProductDetailScripts(productId) {
@@ -2019,8 +2017,22 @@ class Router {
                 // ✅ Cargar dinámicamente tu script de filtros
                 const script = document.createElement("script");
                 script.src = "/assets/js/product-filter.js";
-                script.onload = () => console.log("Filtro de productos cargado ✅");
+
+                const scriptLoaded = new Promise((resolve) => {
+                    script.onload = () => {
+                        console.log("Filtro de productos cargado ✅");
+                        resolve();
+                    };
+                    script.onerror = (error) => {
+                        console.error("Error al cargar el filtro de productos", error);
+                        resolve();
+                    };
+                });
+
                 document.body.appendChild(script);
+                await scriptLoaded;
+
+                this.setupProductFilters();
             }
         } catch (error) {
             console.error('Error loading products:', error);
@@ -2307,7 +2319,6 @@ class Router {
                             <div class="tallas-section mb-3">
                                 <h6 class="text-warning mb-2">
                                     <i class="fas fa-star me-1"></i>Tallas Especiales 
-                                    <small class="text-danger">(precio con recargo adicional)</small>
                                 </h6>
                                 <div class="tallas-group">
                                     ${tallasEspecialesHtml}
@@ -2691,34 +2702,39 @@ class Router {
     }
 
     setupProductFilters() {
-        (function () {
-        const inputGlobal00 = document.getElementById("busqueda-global");
-        const inputHidden00 = document.getElementById("search-input");
-        const productsContainer = document.getElementById("products-container");
-        const products = Array.from(productsContainer.getElementsByClassName("product-item"));
+        const searchInput = document.getElementById('search-input');
+        if (!searchInput) {
+            return;
+        }
 
-        if (inputGlobal00 && inputHidden00) {
-            // Pasar el texto del navbar al input principal
-            inputHidden00.value = inputGlobal00.value;
+        const searchButton = document.getElementById('search-btn');
+        if (searchButton && !searchButton.dataset.listenerAttached) {
+            searchButton.addEventListener('click', () => {
+                searchInput.dispatchEvent(new Event('input', { bubbles: true }));
+            });
+            searchButton.dataset.listenerAttached = 'true';
+        }
 
-            // Limpiar buscador del navbar
-            inputGlobal00.value = "";
+        let storedQuery = '';
+        try {
+            storedQuery = sessionStorage.getItem('leopardo_global_search') || '';
+        } catch (error) {
+            console.warn('No se pudo leer el término de búsqueda almacenado:', error);
+        }
 
-            // Lógica de filtrado solo por texto
-            const searchText = inputHidden00.value.toLowerCase();
+        if (storedQuery) {
+            searchInput.value = storedQuery;
 
-            products.forEach(product => {
-                const name = product.dataset.name.toLowerCase();
-                const parent = product.parentElement;
+            try {
+                sessionStorage.removeItem('leopardo_global_search');
+            } catch (error) {
+                console.warn('No se pudo limpiar el término de búsqueda almacenado:', error);
+            }
 
-                if (name.includes(searchText)) {
-                    parent.style.display = "";
-                } else {
-                    parent.style.display = "none";
-                }
+            window.requestAnimationFrame(() => {
+                searchInput.dispatchEvent(new Event('input', { bubbles: true }));
             });
         }
-        })();
     }
 
     setupContactForm() {
@@ -2780,10 +2796,12 @@ class Router {
                     const templateParams = {
                         from_name: formData.name,
                         from_email: formData.email,
-                        to_email: window.EmailConfig.destinationEmail || 'josehuanca612@gmail.com',
-                        subject: formData.subject,
+                        to_email: window.EmailConfig.destinationEmail || 'pierregomezsanchez@gmail.com',
+                        subject: 'CONTACTO CALZADO - ' + formData.subject,
                         message: formData.message,
                         reply_to: formData.email,
+                        // Nombre del remitente que aparecerá en Gmail
+                        reply_to_name: 'CALZADO CONTACT',
                         // Datos adicionales para hacer la plantilla más atractiva
                         company_name: 'Calzado Industrial Leopardo',
                         current_date: new Date().toLocaleDateString('es-PE', { 
@@ -3060,7 +3078,6 @@ function showSizeSelector(productId, productName) {
                         <div class="col-12 mb-2 mt-3">
                             <h6 class="text-warning mb-2">
                                 <i class="fas fa-star me-1"></i>Tallas Especiales 
-                                <small class="text-danger">(precio con recargo adicional)</small>
                             </h6>
                         </div>
                         ${tallasEspecialesHtml}

@@ -1160,6 +1160,35 @@ $(document).ready(function() {
     setupGlobalEventListeners();
 });
 
+window.handleGlobalSearch = function(query, { closeMobileMenu = false } = {}) {
+    const trimmedQuery = (query || '').trim();
+
+    if (!trimmedQuery) {
+        if (typeof Utils !== 'undefined' && typeof Utils.showNotification === 'function') {
+            Utils.showNotification('Ingresa un término de búsqueda', 'warning');
+        }
+        return;
+    }
+
+    try {
+        sessionStorage.setItem('leopardo_global_search', trimmedQuery);
+    } catch (error) {
+        console.warn('No se pudo almacenar el término de búsqueda en sessionStorage:', error);
+    }
+
+    if (closeMobileMenu && window.mobileMenu && typeof window.mobileMenu.close === 'function') {
+        window.mobileMenu.close();
+    }
+
+    const targetPath = '/productos/busqueda';
+
+    if (window.router && typeof window.router.navigate === 'function') {
+        window.router.navigate(targetPath);
+    } else {
+        window.location.href = targetPath;
+    }
+};
+
 /**
  * Configurar event listeners globales
  */
@@ -1170,14 +1199,15 @@ function setupGlobalEventListeners() {
         Auth.logout();
     });
     
-    // Búsqueda global
-    $('#global-search').on('keyup', Utils.debounce(function() {
-        const query = $(this).val();
-        if (query.length > 2) {
-            // Implementar búsqueda global
-            console.log('Búsqueda:', query);
-        }
-    }, 300));
+    $('#search-form').on('submit', function(e) {
+        e.preventDefault();
+        window.handleGlobalSearch($('#global-search').val());
+    });
+
+    $('#mobile-search-form').on('submit', function(e) {
+        e.preventDefault();
+        window.handleGlobalSearch($('#mobile-search').val(), { closeMobileMenu: true });
+    });
     
     // Auto-save en formularios
     $('form[data-auto-save]').on('input', Utils.debounce(function() {

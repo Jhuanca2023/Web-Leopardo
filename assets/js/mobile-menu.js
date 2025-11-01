@@ -72,10 +72,10 @@ class MobileMenu {
 
     handleMobileSearch(e) {
         e.preventDefault();
-        const query = this.mobileSearch?.value.trim();
-        
-        if (query) {
-            window.location.href = `/productos?search=${encodeURIComponent(query)}`;
+        const query = this.mobileSearch?.value || '';
+
+        if (typeof window.handleGlobalSearch === 'function') {
+            window.handleGlobalSearch(query, { closeMobileMenu: true });
         }
     }
 
